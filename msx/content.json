@@ -1,0 +1,17 @@
+{
+  "headline": "ItalStream+ VO — Smart TV 4K",
+  "action": "link:https://vladimirocchipinti.github.io/italstream-vidaa/",
+  "template": {
+    "type": "separate",
+    "layout": "0,0,4,3",
+    "color": "msx-red",
+    "icon": "play-circle-filled"
+  },
+  "items": [
+    {
+      "title": "Avvia ItalStream+ VO",
+      "playerLabel": "ItalStream+ VO",
+      "action": "link:https://vladimirocchipinti.github.io/italstream-vidaa/"
+    }
+  ]
+}

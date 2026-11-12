@@ -1,0 +1,2545 @@
+/* ============================================================================
+   ITALSTREAM+ VO — SAMSUNG TIZEN 60FPS HARDWARE-ACCELERATED TV STYLESHEET
+   Zero GPU blur/shadow lag on armv7 Tizen 5.5 TVs + Full Stremio/Netflix UI
+   ============================================================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: #07090e;
+  color: #f5f7fa;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.osd-hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ============================================================================
+   60FPS TV REMOTE FOCUS RING (ZERO-LAG SOLID BORDER + GPU TRANSFORM)
+   ============================================================================ */
+.tv-focused {
+  outline: none !important;
+  border-color: #ff1e27 !important;
+  background-color: #1c2438 !important;
+  transform: translateZ(0) scale(1.03) !important;
+  z-index: 30 !important;
+}
+
+.tv-btn-primary.tv-focused,
+.tv-nav-btn.active.tv-focused {
+  background-color: #ff1e27 !important;
+  border-color: #ffffff !important;
+}
+
+/* ============================================================================
+   TOP NETFLIX / STREMIO TV NAVBAR
+   ============================================================================ */
+.tv-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 84px;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #07090e;
+  border-bottom: 2px solid #181e2c;
+  z-index: 100;
+}
+
+.tv-brand {
+  display: flex;
+  align-items: center;
+}
+
+.vo-monogram {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background-color: #e50914;
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  border: 2px solid #ff6b72;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-ital {
+  font-size: 20px;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.brand-stream {
+  font-size: 20px;
+  font-weight: 900;
+  color: #ff1e27;
+}
+
+.brand-sub {
+  font-size: 10px;
+  font-weight: 800;
+  color: #10b981;
+  letter-spacing: 1px;
+}
+
+.tv-nav-pills {
+  display: flex;
+  align-items: center;
+}
+
+.tv-nav-btn {
+  background-color: #121724;
+  color: #d1d5db;
+  border: 3px solid #1f293d;
+  border-radius: 999px;
+  padding: 8px 11px;
+  margin: 0 2px;
+  font-size: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.tv-nav-iptv {
+  border-color: #10b981;
+  color: #6ee7b7;
+  background-color: #06281e;
+}
+
+.tv-nav-continue {
+  border-color: #d97706;
+  color: #fde68a;
+  background-color: #1f1608;
+}
+
+.tv-nav-fav {
+  border-color: #be123c;
+  color: #fecdd3;
+  background-color: #230b14;
+}
+
+.tv-nav-netflix {
+  border-color: #7f1d1d;
+  color: #fca5a5;
+}
+
+.tv-nav-disney {
+  border-color: #1e3a8a;
+  color: #93c5fd;
+}
+
+.tv-nav-sky {
+  border-color: #4c1d95;
+  color: #c4b5fd;
+}
+
+.tv-nav-btn.active {
+  background-color: #e50914;
+  color: #ffffff;
+  border-color: #ff6b72;
+}
+
+.tv-torbox-btn {
+  display: flex;
+  align-items: center;
+  background-color: #082f27;
+  border: 3px solid #10b981;
+  padding: 9px 14px;
+  margin-left: 6px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #34d399;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #10b981;
+  margin-right: 7px;
+}
+
+/* ============================================================================
+   HERO SPOTLIGHT BANNER & FIXED CATALOG SCROLL CONTAINER
+   ============================================================================ */
+.tv-catalog-view {
+  position: fixed;
+  top: 84px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-bottom: 420px;
+}
+
+.tv-hero {
+  position: relative;
+  width: 100%;
+  height: 390px;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 52px 30px 52px;
+  overflow: hidden;
+  background-color: #0b0f19;
+  border-bottom: 1px solid #161d2b;
+}
+
+.tv-hero-backdrop-wrap {
+  position: absolute;
+  top: 0;
+  left: 28%;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.tv-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.45;
+}
+
+.tv-hero-vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, #0b0f19 0%, rgba(11, 15, 25, 0.72) 45%, rgba(11, 15, 25, 0.12) 100%);
+}
+
+.tv-hero-content {
+  position: relative;
+  z-index: 5;
+  max-width: 960px;
+}
+
+.tv-hero-badges {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.tv-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 800;
+  margin-right: 10px;
+}
+
+.tv-badge-red {
+  background-color: #e50914;
+  color: #ffffff;
+}
+
+.tv-badge-green {
+  background-color: #064e3b;
+  border: 1px solid #10b981;
+  color: #6ee7b7;
+}
+
+.tv-badge-gold {
+  background-color: #451a03;
+  border: 1px solid #f59e0b;
+  color: #fbbf24;
+}
+
+.tv-badge-blue {
+  background-color: #172554;
+  border: 1px solid #3b82f6;
+  color: #93c5fd;
+}
+
+.tv-hero-title {
+  font-size: 42px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.tv-hero-desc {
+  font-size: 18px;
+  line-height: 1.4;
+  color: #d1d5db;
+  margin-bottom: 18px;
+  max-height: 76px;
+  overflow: hidden;
+}
+
+.tv-hero-actions {
+  display: flex;
+  align-items: center;
+}
+
+.tv-btn-primary {
+  background-color: #e50914;
+  color: #ffffff;
+  border: 4px solid transparent;
+  border-radius: 10px;
+  padding: 13px 26px;
+  font-size: 19px;
+  font-weight: 800;
+  margin-right: 14px;
+}
+
+.tv-btn-secondary {
+  background-color: #182032;
+  color: #ffffff;
+  border: 4px solid #2d3852;
+  border-radius: 10px;
+  padding: 13px 24px;
+  font-size: 19px;
+  font-weight: 700;
+  margin-right: 14px;
+}
+
+/* ============================================================================
+   HORIZONTAL NETFLIX / STREMIO ROWS & POSTER CARDS
+   ============================================================================ */
+.tv-rows-container {
+  padding: 22px 52px 60px 52px;
+}
+
+.tv-row,
+.tv-row-block {
+  margin-bottom: 34px;
+}
+
+.tv-row-special {
+  background-color: #0c1220;
+  border: 2px solid #1e293b;
+  border-radius: 16px;
+  padding: 16px 20px 10px 20px;
+  margin-bottom: 34px;
+}
+
+.tv-row-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-right: 12px;
+}
+
+.tv-row-title {
+  font-size: 25px;
+  font-weight: 900;
+  color: #f9fafb;
+}
+
+.tv-row-count {
+  font-size: 15px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.tv-row-scroller {
+  display: flex;
+  align-items: stretch;
+  overflow-x: hidden;
+  overflow-y: visible;
+  padding: 12px 8px 18px 8px;
+}
+
+.tv-card {
+  position: relative;
+  width: 216px;
+  min-width: 216px;
+  height: 346px;
+  background-color: #111624;
+  border-radius: 14px;
+  border: 4px solid #1e263b;
+  margin-right: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.tv-card-poster {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.tv-card-shade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64%;
+  background: linear-gradient(180deg, rgba(7,9,14,0) 0%, rgba(7,9,14,0.88) 52%, #07090e 100%);
+  z-index: 2;
+}
+
+.tv-card-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(7, 9, 14, 0.92);
+  border: 1px solid #e50914;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 900;
+  padding: 4px 8px;
+  border-radius: 6px;
+  z-index: 4;
+}
+
+.tv-card-torbox {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #064e3b;
+  border: 1px solid #10b981;
+  color: #6ee7b7;
+  font-size: 12px;
+  font-weight: 900;
+  padding: 4px 8px;
+  border-radius: 6px;
+  z-index: 4;
+}
+
+.tv-card-fav {
+  position: absolute;
+  top: 44px;
+  right: 10px;
+  background-color: rgba(7, 9, 14, 0.92);
+  border: 1px solid #ef4444;
+  font-size: 14px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  z-index: 4;
+}
+
+.tv-card-progress-wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.28);
+  z-index: 5;
+}
+
+.tv-card-progress-bar {
+  height: 100%;
+  background-color: #e50914;
+}
+
+.tv-card-info {
+  position: relative;
+  z-index: 3;
+  padding: 10px 12px 14px 12px;
+}
+
+.tv-card-title {
+  font-size: 17px;
+  font-weight: 900;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tv-card-sub {
+  font-size: 13px;
+  font-weight: 700;
+  color: #cbd5e1;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tv-card-hold-hint {
+  font-size: 11px;
+  font-weight: 800;
+  color: #fbbf24;
+  margin-top: 4px;
+}
+
+/* ============================================================================
+   ON-SCREEN TV KEYBOARD & SEARCH (100% TIZEN FLEXBOX ROWS - NO GRID BUGS)
+   ============================================================================ */
+.tv-search-section {
+  padding: 24px 52px 48px 52px;
+}
+
+.tv-search-panel {
+  background-color: #0e1422;
+  border: 3px solid #232f49;
+  border-radius: 18px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+}
+
+.tv-search-display {
+  display: flex;
+  align-items: center;
+  background-color: #06080d;
+  border: 4px solid #e50914;
+  border-radius: 14px;
+  padding: 16px 24px;
+  margin-bottom: 20px;
+  font-size: 26px;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.search-icon {
+  font-size: 28px;
+  margin-right: 16px;
+}
+
+.tv-search-query-text {
+  font-size: 26px;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.tv-keyboard {
+  display: flex;
+  flex-direction: column;
+}
+
+.tv-kb-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.tv-key,
+.tv-key-btn {
+  flex: 1;
+  background-color: #182136;
+  color: #ffffff;
+  border: 3px solid #2e3c5e;
+  border-radius: 10px;
+  height: 60px;
+  margin: 0 5px;
+  font-size: 22px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tv-key-wide {
+  flex: 2.3;
+  background-color: #243150;
+  border-color: #3b4f7d;
+  font-size: 19px;
+}
+
+.tv-key-danger {
+  flex: 2;
+  background-color: #3b1219;
+  border-color: #991b1b;
+  color: #fecaca;
+  font-size: 19px;
+}
+
+.tv-key-chip {
+  flex: 1;
+  background-color: #111c2d;
+  border: 3px solid #1e3a5f;
+  color: #93c5fd;
+  border-radius: 999px;
+  height: 50px;
+  margin: 4px 5px 0 5px;
+  font-size: 16px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  padding: 0 12px;
+}
+
+/* ============================================================================
+   FULLSCREEN DETAIL & LARGE EPISODE CARDS WITH 16:9 IMAGE
+   ============================================================================ */
+.tv-detail-view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #07090e;
+  z-index: 200;
+  overflow-y: auto;
+  padding: 40px 56px 140px 56px;
+}
+
+.tv-detail-top {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 26px;
+}
+
+.tv-detail-poster {
+  width: 210px;
+  height: 315px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 3px solid #2b3550;
+  margin-right: 34px;
+}
+
+.tv-detail-info {
+  flex: 1;
+}
+
+.tv-detail-title {
+  font-size: 40px;
+  font-weight: 900;
+  margin: 8px 0;
+  color: #ffffff;
+}
+
+.tv-detail-meta {
+  font-size: 19px;
+  color: #cbd5e1;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tv-detail-meta span {
+  margin-right: 28px;
+}
+
+.tv-detail-desc {
+  font-size: 18px;
+  line-height: 1.45;
+  color: #e5e7eb;
+  max-width: 1120px;
+  margin-bottom: 22px;
+}
+
+.tv-detail-buttons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tv-section-heading {
+  font-size: 24px;
+  font-weight: 900;
+  color: #f8fafc;
+  margin: 22px 0 14px 0;
+}
+
+.tv-seasons-bar {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.tv-season-btn {
+  background-color: #141a29;
+  color: #d1d5db;
+  border: 3px solid #26304a;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0 10px 10px 0;
+}
+
+.tv-season-btn.active {
+  background-color: #e50914;
+  color: #ffffff;
+  border-color: #ff6b72;
+}
+
+.tv-episodes-scroller {
+  display: flex;
+  overflow-x: hidden;
+  padding: 12px 6px 20px 6px;
+}
+
+.tv-ep-card {
+  width: 348px;
+  min-width: 348px;
+  height: 296px;
+  background-color: #121724;
+  border: 4px solid #232c44;
+  border-radius: 14px;
+  margin-right: 22px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.tv-ep-card.active {
+  border-color: #10b981;
+  background-color: #082f27;
+}
+
+.tv-ep-card.watched:not(.active) {
+  border-color: rgba(16, 185, 129, 0.55);
+  background-color: #0b221e;
+}
+
+.tv-ep-card.watched .tv-ep-play-icon {
+  background-color: #10b981;
+  color: #052e16;
+}
+
+.tv-ep-thumb-wrap {
+  position: relative;
+  width: 100%;
+  height: 174px;
+  background-color: #1a2133;
+  overflow: hidden;
+}
+
+.tv-ep-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tv-ep-thumb-shade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64px;
+  background: linear-gradient(180deg, rgba(7,9,14,0) 0%, rgba(7,9,14,0.92) 100%);
+}
+
+.tv-ep-num,
+.tv-ep-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  background-color: rgba(7, 9, 14, 0.92);
+  border: 1px solid #e50914;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.tv-ep-play-icon {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  background-color: #064e3b;
+  border: 1px solid #10b981;
+  color: #6ee7b7;
+  font-size: 13px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.tv-ep-body {
+  padding: 12px 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tv-ep-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tv-ep-desc {
+  font-size: 14px;
+  color: #cbd5e1;
+  line-height: 1.35;
+  height: 54px;
+  overflow: hidden;
+}
+
+/* ============================================================================
+   STREMIO-STYLE TORBOX STREAM SOURCE CARDS (DELUXE READABILITY)
+   ============================================================================ */
+.tv-streams-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.tv-stream-item,
+.tv-stream-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #111827;
+  border: 4px solid #24304c;
+  border-radius: 14px;
+  padding: 18px 26px;
+  margin-bottom: 14px;
+  color: #ffffff;
+  text-align: left;
+}
+
+.tv-stream-left {
+  display: flex;
+  flex-direction: column;
+  width: 78%;
+  max-width: 78%;
+  padding-right: 20px;
+}
+
+.tv-stream-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.tv-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 900;
+  margin-right: 10px;
+}
+
+.tv-tag-ita {
+  background-color: #e50914;
+  color: #ffffff;
+}
+
+.tv-tag-sub {
+  background-color: #1e3a8a;
+  border: 1px solid #3b82f6;
+  color: #bfdbfe;
+}
+
+.tv-tag-cache {
+  background-color: #064e3b;
+  border: 1px solid #10b981;
+  color: #6ee7b7;
+}
+
+.tv-tag-cloud {
+  background-color: #1f2937;
+  border: 1px solid #4b5563;
+  color: #d1d5db;
+}
+
+.tv-tag-res {
+  background-color: #451a03;
+  border: 1px solid #f59e0b;
+  color: #fde68a;
+}
+
+.tv-stream-title,
+.tv-stream-name {
+  font-size: 19px;
+  font-weight: 800;
+  color: #f8fafc;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tv-stream-meta {
+  font-size: 15px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.tv-stream-badges {
+  display: flex;
+  align-items: center;
+}
+
+.tv-stream-play-pill {
+  background-color: #e50914;
+  border: 2px solid #ff6b72;
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+/* ============================================================================
+   MODAL OVERLAYS (HOLD-OK CONTINUA A GUARDARE & QR CODE SETTINGS)
+   ============================================================================ */
+.tv-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(4, 6, 10, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 260;
+}
+
+.tv-modal-box {
+  width: 740px;
+  background-color: #121726;
+  border: 3px solid #2b3654;
+  border-radius: 18px;
+  padding: 34px 40px;
+}
+
+.tv-settings-box {
+  width: 980px;
+}
+
+.tv-settings-cols {
+  display: flex;
+  align-items: center;
+}
+
+.tv-qr-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 40px;
+}
+
+.tv-qr-frame {
+  width: 260px;
+  height: 260px;
+  background-color: #ffffff;
+  padding: 14px;
+  border-radius: 16px;
+  margin-bottom: 12px;
+}
+
+.tv-qr-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tv-qr-url {
+  font-size: 15px;
+  font-weight: 800;
+  color: #6ee7b7;
+  background-color: #064e3b;
+  padding: 6px 14px;
+  border-radius: 8px;
+}
+
+.tv-settings-info-col {
+  flex: 1;
+}
+
+.tv-modal-title {
+  font-size: 32px;
+  font-weight: 900;
+  margin: 10px 0;
+}
+
+.tv-modal-sub {
+  font-size: 18px;
+  line-height: 1.45;
+  color: #d1d5db;
+  margin-bottom: 20px;
+}
+
+.tv-account-status-box {
+  background-color: #064e3b;
+  border: 2px solid #10b981;
+  color: #6ee7b7;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 22px;
+}
+
+.tv-modal-actions {
+  display: flex;
+  flex-direction: column;
+}
+
+.tv-modal-btn {
+  width: 100%;
+  margin: 0 0 12px 0;
+  text-align: left;
+}
+
+/* ============================================================================
+   FULLSCREEN TV PLAYER & NETFLIX SCRUBBER
+   ============================================================================ */
+.tv-player-view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #000000;
+  z-index: 300;
+}
+
+.tv-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background-color: #000000;
+}
+
+.tv-player-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.84);
+  z-index: 310;
+}
+
+.tv-spinner {
+  width: 64px;
+  height: 64px;
+  border: 6px solid #374151;
+  border-top-color: #e50914;
+  border-radius: 50%;
+  animation: tvspin 0.9s linear infinite;
+  margin-bottom: 18px;
+}
+
+@keyframes tvspin {
+  to { transform: rotate(360deg); }
+}
+
+.tv-player-loading-text {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+  text-align: center;
+  max-width: 80%;
+}
+
+.tv-scrub-preview {
+  position: absolute;
+  bottom: 170px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #e50914;
+  border: 3px solid #ffffff;
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 900;
+  padding: 14px 32px;
+  border-radius: 999px;
+  z-index: 340;
+}
+
+.tv-skip-segment-btn {
+  position: absolute;
+  right: 52px;
+  bottom: 62px;
+  background-color: rgba(255, 255, 255, 0.96);
+  color: #090d16;
+  border: 3px solid #ffffff;
+  border-radius: 12px;
+  padding: 16px 30px;
+  font-size: 25px;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+  z-index: 345;
+  transition: bottom 0.2s ease, transform 0.15s ease;
+}
+
+.tv-skip-segment-btn.with-osd {
+  bottom: 205px;
+}
+
+.tv-skip-segment-btn:hover,
+.tv-skip-segment-btn.tv-focused {
+  transform: scale(1.05);
+  background-color: #ffffff;
+  border-color: #e50914;
+}
+
+html.ios-mobile .tv-skip-segment-btn {
+  right: 18px;
+  bottom: 28px;
+  padding: 10px 18px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+html.ios-mobile .tv-skip-segment-btn.with-osd {
+  bottom: 126px;
+}
+
+.tv-player-osd {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 52px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.92) 100%);
+  z-index: 320;
+}
+
+.tv-osd-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.tv-osd-badge {
+  display: inline-block;
+  background-color: #10b981;
+  color: #042f2e;
+  font-size: 13px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 5px;
+  margin-bottom: 6px;
+}
+
+.tv-osd-title {
+  font-size: 32px;
+  font-weight: 900;
+}
+
+.tv-osd-sub {
+  font-size: 18px;
+  color: #d1d5db;
+  margin-top: 4px;
+}
+
+.tv-osd-hint {
+  background-color: #182032;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #e5e7eb;
+}
+
+.tv-progress-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 3px solid transparent;
+}
+
+.tv-progress-row.tv-focused {
+  border-color: #ff1e27 !important;
+  background-color: rgba(255, 30, 39, 0.18) !important;
+  transform: none !important;
+}
+
+.tv-time-label {
+  font-size: 20px;
+  font-weight: 800;
+  width: 94px;
+  text-align: center;
+}
+
+.tv-progress-track {
+  position: relative;
+  flex: 1;
+  height: 14px;
+  background-color: #374151;
+  border-radius: 999px;
+  margin: 0 16px;
+}
+
+.tv-progress-fill {
+  width: 0%;
+  height: 100%;
+  background-color: #e50914;
+  border-radius: 999px;
+}
+
+.tv-progress-thumb {
+  position: absolute;
+  top: -5px;
+  left: 0%;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 4px solid #e50914;
+  transform: translateX(-50%);
+}
+
+.tv-osd-controls {
+  display: flex;
+  align-items: center;
+}
+
+.tv-osd-btn {
+  background-color: #182032;
+  color: #ffffff;
+  border: 3px solid #2e3b59;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-size: 19px;
+  font-weight: 800;
+  margin-right: 14px;
+}
+
+.tv-osd-btn-exit {
+  background-color: #450a0a;
+  border-color: #e50914;
+}
+
+/* ============================================================================
+   SOTTOTITOLI OVERLAY + PANNELLO AUDIO & SOTTOTITOLI
+   ============================================================================ */
+.tv-subtitle-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 7%;
+  text-align: center;
+  z-index: 40;
+  pointer-events: none;
+  padding: 0 8%;
+}
+
+.tv-subtitle-overlay.tv-sub-raised {
+  bottom: 26%;
+}
+
+.tv-subtitle-text {
+  display: inline-block;
+  font-size: 42px;
+  line-height: 1.32;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.55);
+  padding: 6px 18px;
+  border-radius: 8px;
+  white-space: pre-line;
+  text-shadow: 2px 2px 3px #000000, -2px -2px 3px #000000, 2px -2px 3px #000000, -2px 2px 3px #000000;
+}
+
+.tv-tracks-modal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(4, 6, 10, 0.86);
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.tv-tracks-box {
+  display: flex;
+  width: 1500px;
+  max-width: 92%;
+  background-color: #121726;
+  border: 3px solid #2b3654;
+  border-radius: 18px;
+  padding: 30px 34px;
+}
+
+.tv-tracks-col {
+  flex: 1;
+  margin: 0 14px;
+  min-width: 0;
+}
+
+.tv-tracks-title {
+  font-size: 30px;
+  font-weight: 900;
+  margin: 0 0 18px 0;
+  color: #ffffff;
+}
+
+.tv-tracks-list {
+  position: relative;
+  max-height: 600px;
+  overflow: hidden;
+}
+
+.tv-track-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background-color: #182032;
+  color: #e5e7eb;
+  border: 3px solid #2e3b59;
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tv-track-item.tv-track-active {
+  background-color: #064e3b;
+  border-color: #10b981;
+  color: #ffffff;
+}
+
+.tv-track-item.tv-focused {
+  border-color: #ffffff;
+  background-color: #e50914;
+  color: #ffffff;
+}
+
+.tv-tracks-hint {
+  margin-top: 22px;
+  font-size: 20px;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.tv-native-search-input,
+.tv-osd-btn-pip {
+  display: none;
+}
+
+/* ============================================================================
+   NATIVE iOS / iPHONE 17 PRO RESPONSIVE MOBILE & TOUCH EDITION (html.ios-mobile)
+   ============================================================================ */
+html.ios-mobile,
+html.ios-mobile body {
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html.ios-mobile .tv-navbar {
+  height: auto;
+  min-height: calc(env(safe-area-inset-top, 44px) + 88px);
+  padding: calc(env(safe-area-inset-top, 44px) + 6px) 14px 8px 14px;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  background-color: rgba(7, 9, 14, 0.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+html.ios-mobile .tv-brand {
+  margin-bottom: 6px;
+}
+
+html.ios-mobile .vo-monogram {
+  width: 32px;
+  height: 32px;
+  font-size: 15px;
+  border-radius: 8px;
+  margin-right: 8px;
+}
+
+html.ios-mobile .brand-ital,
+html.ios-mobile .brand-stream {
+  font-size: 16px;
+}
+
+html.ios-mobile .brand-sub {
+  font-size: 9px;
+}
+
+html.ios-mobile .tv-nav-pills {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 2px 0 4px 0;
+  scrollbar-width: none;
+}
+
+html.ios-mobile .tv-nav-pills::-webkit-scrollbar {
+  display: none;
+}
+
+html.ios-mobile .tv-nav-btn,
+html.ios-mobile .tv-torbox-btn {
+  padding: 6px 12px;
+  font-size: 12.5px;
+  border-width: 2px;
+  margin: 0 3px;
+  flex-shrink: 0;
+}
+
+html.ios-mobile .tv-catalog-view {
+  top: calc(env(safe-area-inset-top, 44px) + 92px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 24px) + 90px);
+  -webkit-overflow-scrolling: touch;
+}
+
+html.ios-mobile .tv-hero {
+  height: auto;
+  min-height: 235px;
+  padding: 22px 16px 18px 16px;
+}
+
+html.ios-mobile .tv-hero-backdrop-wrap {
+  left: 0;
+}
+
+html.ios-mobile .tv-hero-vignette {
+  background: linear-gradient(180deg, rgba(11,15,25,0.35) 0%, rgba(11,15,25,0.88) 70%, #0b0f19 100%);
+}
+
+html.ios-mobile .tv-hero-badges {
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+html.ios-mobile .tv-badge {
+  font-size: 10.5px;
+  padding: 3px 8px;
+  margin-right: 6px;
+  margin-bottom: 4px;
+}
+
+html.ios-mobile .tv-hero-title {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+html.ios-mobile .tv-hero-desc {
+  font-size: 13px;
+  line-height: 1.35;
+  max-height: 54px;
+  margin-bottom: 12px;
+}
+
+html.ios-mobile .tv-hero-actions {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+html.ios-mobile .tv-btn-primary,
+html.ios-mobile .tv-btn-secondary {
+  padding: 9px 14px;
+  font-size: 13px;
+  border-width: 2px;
+  border-radius: 9px;
+  margin-right: 0;
+}
+
+html.ios-mobile .tv-rows-container {
+  padding: 14px 12px 40px 12px;
+}
+
+html.ios-mobile .tv-row,
+html.ios-mobile .tv-row-block,
+html.ios-mobile .tv-row-special {
+  margin-bottom: 20px;
+}
+
+html.ios-mobile .tv-row-special {
+  padding: 12px 10px 8px 10px;
+}
+
+html.ios-mobile .tv-row-title {
+  font-size: 17px;
+}
+
+html.ios-mobile .tv-row-count {
+  font-size: 12px;
+}
+
+html.ios-mobile .tv-row-scroller,
+html.ios-mobile .tv-episodes-scroller {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 4px 12px 4px;
+  scrollbar-width: none;
+}
+
+html.ios-mobile .tv-row-scroller::-webkit-scrollbar,
+html.ios-mobile .tv-episodes-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+html.ios-mobile .tv-card {
+  width: 132px !important;
+  min-width: 132px !important;
+  height: 204px !important;
+  margin-right: 10px !important;
+  border-width: 2px !important;
+  border-radius: 11px !important;
+  flex-shrink: 0;
+}
+
+html.ios-mobile .tv-card-badge,
+html.ios-mobile .tv-card-torbox {
+  font-size: 9.5px;
+  padding: 2px 5px;
+  top: 6px;
+}
+
+html.ios-mobile .tv-card-badge { left: 6px; }
+html.ios-mobile .tv-card-torbox { right: 6px; }
+
+html.ios-mobile .tv-card-info {
+  padding: 6px 8px 9px 8px;
+}
+
+html.ios-mobile .tv-card-title {
+  font-size: 12.5px;
+}
+
+html.ios-mobile .tv-card-sub {
+  font-size: 10.5px;
+}
+
+html.ios-mobile .tv-card-hold-hint {
+  display: none;
+}
+
+/* Native Search on iPhone */
+html.ios-mobile .tv-search-section {
+  padding: 12px;
+}
+
+html.ios-mobile .tv-search-panel {
+  padding: 12px;
+  border-radius: 14px;
+}
+
+html.ios-mobile .tv-search-display {
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  border-width: 2px;
+}
+
+html.ios-mobile .search-icon {
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+html.ios-mobile #tv-search-query-text {
+  display: none;
+}
+
+html.ios-mobile .tv-native-search-input {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+html.ios-mobile .tv-kb-row:not(:last-child) {
+  display: none;
+}
+
+html.ios-mobile .tv-kb-row:last-child {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+}
+
+html.ios-mobile .tv-key-chip {
+  height: 34px;
+  font-size: 12px;
+  padding: 0 10px;
+  flex: 0 0 auto;
+}
+
+/* Detail & Episodes View on iPhone */
+html.ios-mobile .tv-detail-view {
+  padding: calc(env(safe-area-inset-top, 44px) + 12px) 14px calc(env(safe-area-inset-bottom, 24px) + 80px) 14px;
+  -webkit-overflow-scrolling: touch;
+}
+
+html.ios-mobile .tv-detail-top {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+html.ios-mobile .tv-detail-poster {
+  width: 136px;
+  height: 204px;
+  margin-right: 0;
+  margin-bottom: 12px;
+}
+
+html.ios-mobile .tv-detail-title {
+  font-size: 22px;
+}
+
+html.ios-mobile .tv-detail-meta {
+  font-size: 13px;
+  justify-content: center;
+}
+
+html.ios-mobile .tv-detail-meta span {
+  margin: 0 8px;
+}
+
+html.ios-mobile .tv-detail-desc {
+  font-size: 13.5px;
+  margin-bottom: 14px;
+}
+
+html.ios-mobile .tv-detail-buttons {
+  justify-content: center;
+  gap: 8px;
+}
+
+html.ios-mobile .tv-section-heading {
+  font-size: 17px;
+  margin: 16px 0 10px 0;
+}
+
+html.ios-mobile .tv-seasons-bar {
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+}
+
+html.ios-mobile .tv-season-btn {
+  padding: 7px 14px;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+html.ios-mobile .tv-ep-card {
+  width: 230px;
+  min-width: 230px;
+  height: 215px;
+  margin-right: 12px;
+  border-width: 2px;
+}
+
+html.ios-mobile .tv-ep-thumb-wrap {
+  height: 118px;
+}
+
+html.ios-mobile .tv-ep-title {
+  font-size: 14px;
+}
+
+html.ios-mobile .tv-ep-desc {
+  font-size: 11.5px;
+  height: 44px;
+}
+
+html.ios-mobile .tv-stream-item {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 12px 14px;
+  border-width: 2px;
+}
+
+html.ios-mobile .tv-stream-left {
+  width: 100%;
+  max-width: 100%;
+  padding-right: 0;
+  margin-bottom: 10px;
+}
+
+html.ios-mobile .tv-tag {
+  font-size: 10.5px;
+  padding: 3px 7px;
+  margin-right: 5px;
+  margin-bottom: 4px;
+}
+
+html.ios-mobile .tv-stream-title {
+  font-size: 14px;
+}
+
+html.ios-mobile .tv-stream-meta {
+  font-size: 12px;
+}
+
+html.ios-mobile .tv-stream-play-pill {
+  width: 100%;
+  text-align: center;
+  padding: 9px 14px;
+  font-size: 14px;
+}
+
+/* Modals on iPhone */
+html.ios-mobile .tv-modal-box,
+html.ios-mobile .tv-settings-box {
+  width: 94vw;
+  max-width: 480px;
+  max-height: 86vh;
+  overflow-y: auto;
+  padding: 18px 16px;
+}
+
+html.ios-mobile .tv-settings-cols {
+  flex-direction: column;
+}
+
+html.ios-mobile .tv-qr-col {
+  margin-right: 0;
+  margin-bottom: 14px;
+}
+
+html.ios-mobile .tv-qr-frame {
+  width: 170px;
+  height: 170px;
+}
+
+html.ios-mobile .tv-modal-title {
+  font-size: 20px;
+}
+
+html.ios-mobile .tv-modal-sub {
+  font-size: 13px;
+}
+
+/* Player OSD on iPhone */
+html.ios-mobile .tv-player-osd {
+  padding: calc(env(safe-area-inset-top, 24px) + 10px) 16px calc(env(safe-area-inset-bottom, 20px) + 12px) 16px;
+}
+
+html.ios-mobile .tv-osd-title {
+  font-size: 17px;
+}
+
+html.ios-mobile .tv-osd-sub {
+  font-size: 12px;
+}
+
+html.ios-mobile .tv-osd-hint {
+  display: none;
+}
+
+html.ios-mobile .tv-time-label {
+  font-size: 13px;
+  width: 58px;
+}
+
+html.ios-mobile .tv-osd-controls {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+html.ios-mobile .tv-osd-btn {
+  padding: 8px 12px;
+  font-size: 12.5px;
+  margin-right: 0;
+  border-width: 2px;
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+html.ios-mobile .tv-osd-btn-pip {
+  display: inline-block;
+  background-color: #1e3a8a;
+  border-color: #3b82f6;
+}
+
+html.ios-mobile .tv-subtitle-text {
+  font-size: 18px;
+  padding: 4px 10px;
+}
+
+html.ios-mobile .tv-tracks-box {
+  flex-direction: column;
+  width: 94vw;
+  max-height: 82vh;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+html.ios-mobile .tv-tracks-title {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+html.ios-mobile .tv-track-item {
+  font-size: 14px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+html.ios-mobile .tv-scrub-preview {
+  bottom: 120px;
+  font-size: 15px;
+  padding: 8px 16px;
+}
+
+/* ============================================================================
+   PANNELLO EPISODI IN-PLAYER (LATERALE SU MAC/TV, BOTTOM SHEET SU IPHONE)
+   ============================================================================ */
+.tv-player-episodes-drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 520px;
+  background-color: rgba(11, 15, 25, 0.97);
+  border-left: 3px solid #2563eb;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-shadow: -12px 0 36px rgba(0, 0, 0, 0.85);
+}
+
+.tv-ep-drawer-handle {
+  display: none;
+}
+
+.tv-ep-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.tv-ep-drawer-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.tv-ep-drawer-sub {
+  font-size: 14px;
+  font-weight: 700;
+  color: #6ee7b7;
+  margin-top: 3px;
+}
+
+.tv-ep-drawer-seasons {
+  display: flex;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.tv-ep-drawer-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.tv-ep-drawer-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  background-color: #131926;
+  border: 2px solid #232c44;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  color: #ffffff;
+}
+
+.tv-ep-drawer-item.active {
+  background-color: #1e293b;
+  border-color: #e50914;
+}
+
+.tv-ep-drawer-item.watched:not(.active) {
+  background-color: #0b221e;
+  border-color: rgba(16, 185, 129, 0.55);
+}
+
+.tv-ep-drawer-item.tv-focused {
+  border-color: #10b981;
+  background-color: #064e3b;
+}
+
+.tv-ep-drawer-item-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.tv-ep-drawer-item-meta {
+  font-size: 13px;
+  font-weight: 700;
+  color: #6ee7b7;
+  margin-top: 3px;
+}
+
+html.ios-mobile .tv-player-episodes-drawer {
+  top: auto;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 76vh;
+  border-left: none;
+  border-top: 2px solid #2563eb;
+  border-radius: 22px 22px 0 0;
+  padding: 10px 14px 20px 14px;
+}
+
+html.ios-mobile .tv-ep-drawer-handle {
+  display: block;
+  width: 44px;
+  height: 5px;
+  background-color: rgba(255, 255, 255, 0.28);
+  border-radius: 99px;
+  margin: 4px auto 12px auto;
+}
+
+html.ios-mobile .tv-ep-drawer-title {
+  font-size: 17px;
+}
+
+html.ios-mobile .tv-ep-drawer-sub {
+  font-size: 12px;
+}
+
+html.ios-mobile .tv-ep-drawer-item-title {
+  font-size: 14px;
+}
+
+html.ios-mobile .tv-ep-drawer-item-meta {
+  font-size: 11.5px;
+}
+
+/* ============================================================================
+   NETFLIX-STYLE CINEMATIC INTRO SPLASH (60FPS HARDWARE ACCELERATED)
+   ============================================================================ */
+.tv-netflix-intro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 45%, #1d070a 0%, #05060a 72%);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.tv-netflix-intro.intro-fade-out {
+  opacity: 0;
+  transform: scale(1.06);
+  pointer-events: none;
+}
+
+.tv-intro-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: tvIntroZoomIn 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.tv-intro-logo-row {
+  display: flex;
+  align-items: center;
+}
+
+.tv-intro-vo {
+  width: 78px;
+  height: 78px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ff1e27 0%, #b90912 100%);
+  border: 3px solid #ff7a80;
+  color: #ffffff;
+  font-size: 38px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 18px;
+}
+
+.tv-intro-wordmark {
+  font-size: 58px;
+  font-weight: 900;
+  letter-spacing: 3px;
+}
+
+.tv-intro-ital {
+  color: #ffffff;
+}
+
+.tv-intro-stream {
+  color: #e50914;
+}
+
+.tv-intro-sub {
+  margin-top: 16px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 3.5px;
+  color: #94a3b8;
+}
+
+.tv-intro-bar-track {
+  margin-top: 28px;
+  width: 280px;
+  height: 5px;
+  border-radius: 99px;
+  background-color: #1e293b;
+  overflow: hidden;
+}
+
+.tv-intro-bar-fill {
+  width: 100%;
+  height: 100%;
+  background-color: #e50914;
+  transform-origin: left center;
+  animation: tvIntroBar 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes tvIntroZoomIn {
+  0% { opacity: 0; transform: scale(0.84); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes tvIntroBar {
+  0% { transform: scaleX(0.08); }
+  100% { transform: scaleX(1); }
+}
+
+/* ============================================================================
+   SETTINGS IPTV SOURCES LIST (MANAGE ON TV REMOTE)
+   ============================================================================ */
+.tv-settings-sources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 210px;
+  overflow-y: auto;
+  margin: 10px 0 14px 0;
+}
+
+.tv-settings-src-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #111726;
+  border: 2px solid #243049;
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+
+.tv-settings-src-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  margin-right: 12px;
+}
+
+.tv-settings-src-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: #f8fafc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tv-settings-src-meta {
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.tv-settings-src-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.tv-settings-mini-btn {
+  padding: 7px 14px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 800;
+  border: 2px solid #334155;
+  background-color: #1e293b;
+  color: #f1f5f9;
+  cursor: pointer;
+}
+
+.tv-row-scroller,
+.tv-episodes-scroller {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tv-row-scroller::-webkit-scrollbar,
+.tv-episodes-scroller::-webkit-scrollbar,
+.tv-nav-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.tv-card,
+.tv-ep-card,
+.tv-nav-btn,
+.tv-torbox-btn,
+.tv-btn-primary,
+.tv-btn-secondary,
+.tv-stream-item,
+.tv-stream-btn,
+.tv-season-btn,
+.tv-osd-btn {
+  cursor: pointer;
+}
+
+/* ============================================================================
+   SMART TV POINTER / BROWSER CURSOR SCROLL DOCK (VIDAA BROWSER / MAGIC REMOTE)
+   Shown only when mouse cursor movement is detected on TV; hidden on D-Pad
+   ============================================================================ */
+.tv-pointer-scroll-dock {
+  position: fixed;
+  right: 18px;
+  bottom: 20px;
+  z-index: 255;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.tv-pointer-scroll-dock.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tv-pointer-scroll-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  background-color: rgba(17, 24, 39, 0.92);
+  border: 2px solid #e50914;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
+}
+
+.tv-pointer-scroll-btn:hover,
+.tv-pointer-scroll-btn:active {
+  background-color: #e50914;
+  border-color: #ffffff;
+}
+
+/* ============================================================================
+   720p / 1280x720 / 960x540 SMART TV VIEWPORT SCALING (HISENSE VIDAA, MSX, LG)
+   Proportional 60FPS layout for TVs whose WebView reports < 1680px CSS width
+   ============================================================================ */
+@media screen and (max-width: 1680px) {
+  html:not(.ios-mobile) .tv-navbar {
+    height: 58px;
+    padding: 0 14px;
+  }
+
+  html:not(.ios-mobile) .vo-monogram {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 15px;
+    margin-right: 7px;
+  }
+
+  html:not(.ios-mobile) .brand-ital,
+  html:not(.ios-mobile) .brand-stream {
+    font-size: 14px;
+  }
+
+  html:not(.ios-mobile) .brand-sub {
+    font-size: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  html:not(.ios-mobile) .tv-nav-pills {
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-left: 8px;
+    justify-content: flex-end;
+  }
+
+  html:not(.ios-mobile) .tv-nav-btn {
+    padding: 5px 8px;
+    margin: 0 1.5px;
+    font-size: 11px;
+    border-width: 2px;
+    flex-shrink: 0;
+  }
+
+  html:not(.ios-mobile) .tv-torbox-btn {
+    padding: 5px 9px;
+    margin-left: 4px;
+    font-size: 11px;
+    border-width: 2px;
+    flex-shrink: 0;
+  }
+
+  html:not(.ios-mobile) .status-dot {
+    width: 7px;
+    height: 7px;
+    margin-right: 5px;
+  }
+
+  html:not(.ios-mobile) .tv-catalog-view {
+    top: 58px;
+    padding-bottom: 240px;
+  }
+
+  html:not(.ios-mobile) .tv-hero {
+    height: 252px;
+    padding: 0 30px 18px 30px;
+  }
+
+  html:not(.ios-mobile) .tv-hero-content {
+    max-width: 680px;
+  }
+
+  html:not(.ios-mobile) .tv-hero-badges {
+    margin-bottom: 8px;
+  }
+
+  html:not(.ios-mobile) .tv-badge {
+    padding: 3px 8px;
+    font-size: 11px;
+    margin-right: 6px;
+  }
+
+  html:not(.ios-mobile) .tv-hero-title {
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+
+  html:not(.ios-mobile) .tv-hero-desc {
+    font-size: 13.5px;
+    line-height: 1.35;
+    max-height: 54px;
+    margin-bottom: 12px;
+  }
+
+  html:not(.ios-mobile) .tv-btn-primary,
+  html:not(.ios-mobile) .tv-btn-secondary {
+    padding: 8px 16px;
+    font-size: 13.5px;
+    border-width: 3px;
+    border-radius: 8px;
+    margin-right: 10px;
+  }
+
+  html:not(.ios-mobile) .tv-rows-container {
+    padding: 14px 30px 44px 30px;
+  }
+
+  html:not(.ios-mobile) .tv-row,
+  html:not(.ios-mobile) .tv-row-block,
+  html:not(.ios-mobile) .tv-row-special {
+    margin-bottom: 22px;
+  }
+
+  html:not(.ios-mobile) .tv-row-title {
+    font-size: 18px;
+  }
+
+  html:not(.ios-mobile) .tv-row-count {
+    font-size: 12px;
+  }
+
+  html:not(.ios-mobile) .tv-row-scroller {
+    padding: 8px 6px 12px 6px;
+  }
+
+  html:not(.ios-mobile) .tv-card {
+    width: 148px;
+    min-width: 148px;
+    height: 232px;
+    margin-right: 14px;
+    border-width: 3px;
+    border-radius: 10px;
+  }
+
+  html:not(.ios-mobile) .tv-card-badge,
+  html:not(.ios-mobile) .tv-card-torbox {
+    top: 7px;
+    font-size: 9.5px;
+    padding: 3px 6px;
+  }
+
+  html:not(.ios-mobile) .tv-card-fav {
+    top: 32px;
+    font-size: 11px;
+    padding: 2px 5px;
+  }
+
+  html:not(.ios-mobile) .tv-card-info {
+    padding: 7px 9px 10px 9px;
+  }
+
+  html:not(.ios-mobile) .tv-card-title {
+    font-size: 13px;
+  }
+
+  html:not(.ios-mobile) .tv-card-sub {
+    font-size: 10.5px;
+  }
+
+  html:not(.ios-mobile) .tv-card-hold-hint {
+    font-size: 9px;
+  }
+
+  html:not(.ios-mobile) .tv-search-section {
+    padding: 16px 30px 34px 30px;
+  }
+
+  html:not(.ios-mobile) .tv-search-panel {
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+
+  html:not(.ios-mobile) .tv-search-display {
+    padding: 10px 16px;
+    margin-bottom: 12px;
+    font-size: 18px;
+  }
+
+  html:not(.ios-mobile) .tv-search-query-text {
+    font-size: 18px;
+  }
+
+  html:not(.ios-mobile) .tv-key,
+  html:not(.ios-mobile) .tv-key-btn {
+    height: 42px;
+    font-size: 15px;
+    margin: 0 3px;
+    border-width: 2px;
+  }
+
+  html:not(.ios-mobile) .tv-key-chip {
+    height: 36px;
+    font-size: 12px;
+  }
+
+  html:not(.ios-mobile) .tv-detail-view {
+    padding: 22px 32px 90px 32px;
+  }
+
+  html:not(.ios-mobile) .tv-detail-poster {
+    width: 144px;
+    height: 216px;
+    margin-right: 22px;
+  }
+
+  html:not(.ios-mobile) .tv-detail-title {
+    font-size: 27px;
+  }
+
+  html:not(.ios-mobile) .tv-detail-meta {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  html:not(.ios-mobile) .tv-detail-desc {
+    font-size: 13.5px;
+    margin-bottom: 14px;
+  }
+
+  html:not(.ios-mobile) .tv-section-heading {
+    font-size: 18px;
+    margin: 14px 0 10px 0;
+  }
+
+  html:not(.ios-mobile) .tv-season-btn {
+    padding: 7px 14px;
+    font-size: 13.5px;
+    border-width: 2px;
+  }
+
+  html:not(.ios-mobile) .tv-ep-card {
+    width: 238px;
+    min-width: 238px;
+    height: 214px;
+    margin-right: 14px;
+    border-width: 3px;
+  }
+
+  html:not(.ios-mobile) .tv-ep-thumb-wrap {
+    height: 122px;
+  }
+
+  html:not(.ios-mobile) .tv-ep-title {
+    font-size: 13.5px;
+  }
+
+  html:not(.ios-mobile) .tv-ep-desc {
+    font-size: 11px;
+    height: 42px;
+  }
+
+  html:not(.ios-mobile) .tv-stream-item,
+  html:not(.ios-mobile) .tv-stream-btn {
+    padding: 12px 18px;
+    margin-bottom: 10px;
+    border-width: 3px;
+  }
+
+  html:not(.ios-mobile) .tv-tag {
+    font-size: 10.5px;
+    padding: 3px 7px;
+  }
+
+  html:not(.ios-mobile) .tv-stream-title,
+  html:not(.ios-mobile) .tv-stream-name {
+    font-size: 14.5px;
+  }
+
+  html:not(.ios-mobile) .tv-stream-meta {
+    font-size: 12px;
+  }
+
+  html:not(.ios-mobile) .tv-stream-play-pill {
+    padding: 8px 16px;
+    font-size: 13.5px;
+  }
+
+  html:not(.ios-mobile) .tv-modal-box {
+    width: 600px;
+    max-width: 92vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px 24px;
+  }
+
+  html:not(.ios-mobile) .tv-settings-box {
+    width: 780px;
+    max-width: 94vw;
+  }
+
+  html:not(.ios-mobile) .tv-qr-col {
+    margin-right: 22px;
+  }
+
+  html:not(.ios-mobile) .tv-qr-frame {
+    width: 176px;
+    height: 176px;
+    padding: 10px;
+  }
+
+  html:not(.ios-mobile) .tv-modal-title {
+    font-size: 22px;
+    margin: 6px 0;
+  }
+
+  html:not(.ios-mobile) .tv-modal-sub {
+    font-size: 13.5px;
+    margin-bottom: 12px;
+  }
+
+  html:not(.ios-mobile) .tv-account-status-box {
+    padding: 10px 14px;
+    font-size: 13.5px;
+    margin-bottom: 14px;
+  }
+
+  html:not(.ios-mobile) .tv-player-osd {
+    padding: 24px 32px;
+  }
+
+  html:not(.ios-mobile) .tv-osd-title {
+    font-size: 22px;
+  }
+
+  html:not(.ios-mobile) .tv-osd-btn {
+    padding: 8px 14px;
+    font-size: 13.5px;
+  }
+
+  html:not(.ios-mobile) .tv-player-episodes-drawer {
+    width: 390px;
+    padding: 14px;
+  }
+
+  html:not(.ios-mobile) .tv-intro-vo {
+    width: 56px;
+    height: 56px;
+    font-size: 28px;
+  }
+
+  html:not(.ios-mobile) .tv-intro-wordmark {
+    font-size: 40px;
+  }
+}
+
+
+

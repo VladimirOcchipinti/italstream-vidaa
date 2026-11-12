@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="referrer" content="no-referrer">
+  <title>ItalStream+ VO — Configura Smart TV (Cifrato E2E)</title>
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body {
+      margin: 0;
+      padding: 16px;
+      background: #07090e;
+      color: #f9fafb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .card {
+      width: 100%;
+      max-width: 460px;
+      background: #121726;
+      border: 2px solid #26314d;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+    }
+    .card-sync {
+      border-color: #0ea5e9;
+      background: linear-gradient(180deg, #0d1b2e 0%, #121726 100%);
+    }
+    .badge {
+      display: inline-block;
+      background: #064e3b;
+      border: 1px solid #10b981;
+      color: #6ee7b7;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    h2 { margin: 0 0 6px 0; font-size: 18.5px; }
+    p { margin: 0 0 12px 0; font-size: 13px; color: #9ca3af; line-height: 1.45; }
+    label { display: block; font-size: 12.5px; font-weight: 700; margin: 8px 0 5px 0; color: #d1d5db; }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1.5px solid #2e3b5b;
+      background: #07090e;
+      color: #ffffff;
+      font-size: 15px;
+    }
+    button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 11px;
+      border: none;
+      background: #e50914;
+      color: #ffffff;
+      font-size: 15.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn-sync { background: linear-gradient(135deg, #0284c7, #6366f1); }
+    .btn-iptv { background: linear-gradient(135deg, #10b981, #2563eb); }
+    .msg {
+      margin-top: 12px;
+      padding: 11px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      display: none;
+      text-align: center;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <!-- CARD 1 (MESSA IN CIMA!): CLOUD SYNC PERSONALE -->
+  <div class="card card-sync">
+    <span class="badge">🔒 CONNESSIONE DIRETTA TV • CIFRATURA E2E ILLIMITATA</span>
+    <h2>☁️ 1. Cloud Sync Personale (Continua &amp; Preferiti)</h2>
+    <p>
+      Incolla il tuo codice personale <strong>ISYNC1-...</strong> per sincronizzare su questa Smart TV i film iniziati, gli episodi visti e i Preferiti.<br>
+      <em>(Il telefono lo ricorderà qui in locale così sulla prossima TV ti basterà un solo tap!)</em>
+    </p>
+    <input id="cskey" placeholder="ISYNC1-..." autocapitalize="none" autocomplete="off" spellcheck="false">
+    <button type="button" class="btn-sync" onclick="sendPayload('cloud_sync')">☁️ Attiva &amp; Sincronizza Cloud sulla TV</button>
+    <div id="msg3" class="msg"></div>
+  </div>
+
+  <!-- CARD 2: LISTE IPTV -->
+  <div class="card">
+    <h2>📡 2. Aggiungi Lista IPTV alla TV</h2>
+    <p>Invia un abbonamento <strong>Xtream Codes</strong> o link <strong>M3U</strong> direttamente alla memoria della Smart TV (funziona anche a Mac spento e in 5G).</p>
+    <label>Tipo di Lista:</label>
+    <select id="itype" onchange="document.getElementById('xtbox').style.display=this.value==='xtream'?'block':'none';document.getElementById('m3ubox').style.display=this.value==='m3u'?'block':'none'">
+      <option value="xtream">Xtream Codes (Server + Utente + Password)</option>
+      <option value="m3u">Link M3U / M3U8 diretto</option>
+    </select>
+    <label>Nome Lista (es. Casa / Principale):</label>
+    <input id="iname" placeholder="La mia lista TV">
+    <div id="xtbox">
+      <label>Server URL:</label>
+      <input id="isrv" placeholder="http://dominio:porta" autocapitalize="none">
+      <label>Username:</label>
+      <input id="iuser" placeholder="Utente" autocapitalize="none">
+      <label>Password:</label>
+      <input id="ipass" type="password" placeholder="Password">
+    </div>
+    <div id="m3ubox" style="display:none">
+      <label>URL Lista .m3u / .m3u8:</label>
+      <input id="iurl" placeholder="https://.../lista.m3u" autocapitalize="none">
+    </div>
+    <button type="button" class="btn-iptv" onclick="sendPayload('iptv')">🚀 Invia Lista IPTV alla Smart TV</button>
+    <div id="msg1" class="msg"></div>
+  </div>
+
+  <!-- CARD 3: TORBOX KEY -->
+  <div class="card">
+    <h2>⚡ 3. Aggiorna API Key TorBox PRO</h2>
+    <p>Incolla qui la tua API Key TorBox per aggiornare film, serie e anime 4K sulla TV.</p>
+    <input id="tbkey" placeholder="Incolla qui la tua API Key TorBox..." autocapitalize="none">
+    <button type="button" onclick="sendPayload('torbox')">🔑 Invia API Key TorBox alla TV</button>
+    <div id="msg2" class="msg"></div>
+  </div>
+
+  <script>
+    (function () {
+      var BROKERS = [
+        'wss://broker.hivemq.com:8884/mqtt',
+        'wss://broker.emqx.io:8084/mqtt'
+      ];
+
+      function parseHash() {
+        var h = String(window.location.hash || '').replace(/^#/, '');
+        var out = {};
+        var parts = h.split('&');
+        for (var i = 0; i < parts.length; i++) {
+          var eq = parts[i].indexOf('=');
+          if (eq > 0) {
+            out[decodeURIComponent(parts[i].slice(0, eq))] = decodeURIComponent(parts[i].slice(eq + 1));
+          }
+        }
+        return out;
+      }
+
+      var params = parseHash();
+      var ROOM = params.r || '';
+      var SEC = params.k || '';
+
+      // Pre-fill saved ISYNC1 key on phone browser for 1-tap pairing across multiple TVs
+      try {
+        var prevKey = localStorage.getItem('italstream_phone_saved_isync');
+        if (prevKey && prevKey.indexOf('ISYNC1-') === 0) {
+          document.getElementById('cskey').value = prevKey;
+        }
+      } catch (e) {}
+
+      function encStr(str) {
+        var b = new TextEncoder().encode(str);
+        var out = new Uint8Array(2 + b.length);
+        out[0] = (b.length >> 8) & 0xff;
+        out[1] = b.length & 0xff;
+        out.set(b, 2);
+        return out;
+      }
+
+      function encRemLen(len) {
+        var bytes = [];
+        var x = len;
+        do {
+          var d = x % 128;
+          x = Math.floor(x / 128);
+          if (x > 0) d |= 128;
+          bytes.push(d);
+        } while (x > 0);
+        return new Uint8Array(bytes);
+      }
+
+      function concatU8(parts) {
+        var total = 0;
+        for (var i = 0; i < parts.length; i++) total += parts[i].length;
+        var out = new Uint8Array(total);
+        var off = 0;
+        for (var j = 0; j < parts.length; j++) {
+          out.set(parts[j], off);
+          off += parts[j].length;
+        }
+        return out;
+      }
+
+      function xorEncryptBase64(obj) {
+        var rawBytes = new TextEncoder().encode(JSON.stringify(obj));
+        var bin = '';
+        for (var i = 0; i < rawBytes.length; i++) {
+          bin += String.fromCharCode(rawBytes[i] ^ SEC.charCodeAt(i % SEC.length));
+        }
+        return btoa(bin);
+      }
+
+      function publishToBroker(brokerUrl, topic, payloadStr) {
+        return new Promise(function (resolve, reject) {
+          var done = false;
+          var timer = setTimeout(function () {
+            if (!done) {
+              done = true;
+              try { ws.close(); } catch (e) {}
+              reject(new Error('timeout'));
+            }
+          }, 4500);
+
+          var ws = new WebSocket(brokerUrl, 'mqtt');
+          ws.binaryType = 'arraybuffer';
+          ws.onopen = function () {
+            var cid = 'isph_' + Math.random().toString(36).slice(2, 10);
+            var vh = new Uint8Array([0, 4, 77, 81, 84, 84, 4, 2, 0, 30]);
+            var pl = encStr(cid);
+            ws.send(concatU8([new Uint8Array([0x10]), encRemLen(vh.length + pl.length), vh, pl]));
+          };
+          ws.onmessage = function (ev) {
+            var u8 = new Uint8Array(ev.data);
+            if ((u8[0] >> 4) === 2) {
+              // CONNACK -> PUBLISH (QoS 0 + Retain=1 so TV receives it even if still connecting!)
+              var msgBytes = new TextEncoder().encode(payloadStr);
+              var body = concatU8([encStr(topic), msgBytes]);
+              ws.send(concatU8([new Uint8Array([0x31]), encRemLen(body.length), body]));
+              setTimeout(function () {
+                if (!done) {
+                  done = true;
+                  clearTimeout(timer);
+                  try { ws.close(); } catch (e) {}
+                  resolve(true);
+                }
+              }, 220);
+            }
+          };
+          ws.onerror = function () {
+            if (!done) {
+              done = true;
+              clearTimeout(timer);
+              reject(new Error('connessione fallita'));
+            }
+          };
+        });
+      }
+
+      window.sendPayload = async function (kind) {
+        var msgId = kind === 'iptv' ? 'msg1' : (kind === 'torbox' ? 'msg2' : 'msg3');
+        var m = document.getElementById(msgId);
+        m.style.display = 'block';
+        m.style.background = '#1e293b';
+        m.style.color = '#ffffff';
+
+        if (!ROOM || !SEC) {
+          m.style.background = '#7f1d1d';
+          m.textContent = '⚠️ Inquadra di nuovo il QR Code mostrato sulla Smart TV.';
+          return;
+        }
+
+        var p = {
+          kind: kind,
+          ts: Date.now(),
+          id: Math.random().toString(36).slice(2, 11)
+        };
+
+        if (kind === 'torbox') {
+          p.torboxKey = document.getElementById('tbkey').value.trim();
+          if (p.torboxKey.length < 10) {
+            m.textContent = '⚠️ Inserisci una API Key TorBox valida.';
+            return;
+          }
+        } else if (kind === 'cloud_sync') {
+          p.cloudSyncKey = document.getElementById('cskey').value.trim();
+          if (p.cloudSyncKey.indexOf('ISYNC1-') !== 0 && p.cloudSyncKey !== 'CLEAR') {
+            m.textContent = '⚠️ Inserisci il tuo codice che inizia con ISYNC1-... (oppure CLEAR per scollegare).';
+            return;
+          }
+          if (p.cloudSyncKey.indexOf('ISYNC1-') === 0) {
+            try { localStorage.setItem('italstream_phone_saved_isync', p.cloudSyncKey); } catch (e) {}
+          }
+        } else {
+          p.type = document.getElementById('itype').value;
+          p.name = document.getElementById('iname').value.trim() || 'Lista TV';
+          p.server = document.getElementById('isrv').value.trim();
+          p.username = document.getElementById('iuser').value.trim();
+          p.password = document.getElementById('ipass').value.trim();
+          p.url = document.getElementById('iurl').value.trim();
+        }
+
+        m.textContent = '⏳ Cifratura E2E e invio istantaneo alla Smart TV...';
+        var cipher = xorEncryptBase64(p);
+        var topic = 'italstream/v2/pair/' + ROOM;
+
+        var results = await Promise.allSettled([
+          publishToBroker(BROKERS[0], topic, cipher),
+          publishToBroker(BROKERS[1], topic, cipher)
+        ]);
+        var anyOk = results.some(function (r) { return r.status === 'fulfilled'; });
+
+        if (anyOk) {
+          m.style.background = '#064e3b';
+          m.style.color = '#6ee7b7';
+          m.textContent = '✅ Inviato istantaneamente! Guarda lo schermo della tua TV.';
+        } else {
+          m.style.background = '#7f1d1d';
+          m.style.color = '#fecaca';
+          m.textContent = '⚠️ Errore di rete temporaneo. Riprova tra un secondo.';
+        }
+      };
+    })();
+  </script>
+</body>
+</html>

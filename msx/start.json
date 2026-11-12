@@ -1,0 +1,11 @@
+{
+  "name": "ItalStream+ VO",
+  "version": "2.1.6",
+  "parameter": "content:https://vladimirocchipinti.github.io/italstream-vidaa/msx/content.json",
+  "welcome": "none",
+  "launcher": {
+    "icon": "blank",
+    "image": "https://vladimirocchipinti.github.io/italstream-vidaa/icon.png",
+    "color": "msx-black-soft"
+  }
+}

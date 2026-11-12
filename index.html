@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta id="tv-viewport-meta" name="viewport" content="width=1920, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="referrer" content="no-referrer">
+  <title>ItalStream+ VO</title>
+  <script>
+    (function () {
+      try {
+        var ua = navigator.userAgent || '';
+        var isTouchMobile = /iPhone|iPad|iPod|Android.*Mobile/i.test(ua) || (navigator.maxTouchPoints > 1 && Math.min(window.screen.width, window.screen.height) <= 920);
+        if (isTouchMobile) {
+          var vp = document.getElementById('tv-viewport-meta');
+          if (vp) vp.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+          document.documentElement.className += ' ios-mobile';
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body style="background-color:#05060a;">
+  <!-- ========================================================================
+       NETFLIX-STYLE CINEMATIC INTRO SPLASH (ZERO WHITE SCREEN ON BOOT)
+       ======================================================================== -->
+  <div id="tv-netflix-intro" class="tv-netflix-intro">
+    <div class="tv-intro-center">
+      <div class="tv-intro-logo-row">
+        <div class="tv-intro-vo">VO</div>
+        <div class="tv-intro-wordmark"><span class="tv-intro-ital">ITAL</span><span class="tv-intro-stream">STREAM+</span></div>
+      </div>
+      <div class="tv-intro-sub">SMART TV 4K • TORBOX PRO • IPTV LIVE &amp; VOD</div>
+      <div class="tv-intro-bar-track"><div class="tv-intro-bar-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       TOP NETFLIX / STREMIO SMART TV NAVIGATION BAR (ROW 0)
+       ======================================================================== -->
+  <header class="tv-navbar" id="tv-navbar">
+    <div class="tv-brand">
+      <div class="vo-monogram">VO</div>
+      <div class="brand-text">
+        <div><span class="brand-ital">ITAL</span><span class="brand-stream">STREAM+</span></div>
+        <span class="brand-sub">SMART TV 4K ITA</span>
+      </div>
+    </div>
+
+    <nav class="tv-nav-pills" id="tv-nav-pills">
+      <button type="button" class="tv-nav-btn active" data-category="all">
+        🏠 Home
+      </button>
+      <button type="button" class="tv-nav-btn tv-nav-iptv" data-category="iptv_hub">
+        📡 TV Live &amp; IPTV
+      </button>
+      <button type="button" class="tv-nav-btn tv-nav-continue" data-category="continue">
+        ⏱ Continua
+      </button>
+      <button type="button" class="tv-nav-btn tv-nav-fav" data-category="favorites">
+        ❤️ Preferiti
+      </button>
+      <button type="button" class="tv-nav-btn" data-category="new_ita">
+        🔥 Novità
+      </button>
+      <button type="button" class="tv-nav-btn" data-category="movie_ita">
+        🎬 Film
+      </button>
+      <button type="button" class="tv-nav-btn tv-nav-netflix" data-category="netflix_it">
+        🔴 Netflix
+      </button>
+      <button type="button" class="tv-nav-btn tv-nav-disney" data-category="disney_it">
+        🔵 Disney+
+      </button>
+      <button type="button" class="tv-nav-btn tv-nav-sky" data-category="sky_it">
+        🌌 Sky
+      </button>
+      <button type="button" class="tv-nav-btn" data-category="anime_ita">
+        ⛩️ Anime
+      </button>
+      <button type="button" class="tv-nav-btn" data-category="search">
+        🔍 Cerca
+      </button>
+      <button type="button" class="tv-torbox-btn" id="tv-open-settings-btn">
+        <span class="status-dot"></span>
+        <span id="torbox-status-label">⚡ TorBox PRO • 📱 QR</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ========================================================================
+       MAIN CATALOG VIEW (FIXED SCROLL CONTAINER FOR GUARANTEED TV SCROLLING)
+       ======================================================================== -->
+  <main id="tv-catalog-view" class="tv-catalog-view">
+    <!-- HERO SPOTLIGHT BANNER (ROW 1) -->
+    <section class="tv-hero" id="tv-hero">
+      <div class="tv-hero-backdrop-wrap">
+        <img id="tv-hero-img" class="tv-hero-img" src="" alt="">
+        <div class="tv-hero-vignette"></div>
+      </div>
+
+      <div class="tv-hero-content">
+        <div class="tv-hero-badges" id="tv-hero-badges">
+          <span class="tv-badge tv-badge-red">🇮🇹 AUDIO ITA</span>
+          <span class="tv-badge tv-badge-green">⚡ PRONTO SU TORBOX</span>
+          <span class="tv-badge tv-badge-gold" id="tv-hero-rating">★ 8.5</span>
+        </div>
+
+        <h1 class="tv-hero-title" id="tv-hero-title">Caricamento Catalogo Italiano...</h1>
+        <p class="tv-hero-desc" id="tv-hero-desc">
+          Connessione al motore TorBox PRO + TheMovieDB Italia in corso...
+        </p>
+
+        <div class="tv-hero-actions" id="tv-hero-actions">
+          <button type="button" class="tv-btn-primary" id="tv-hero-play-btn">
+            ▶ Riproduci Subito in ITA
+          </button>
+          <button type="button" class="tv-btn-secondary" id="tv-hero-info-btn">
+            ℹ️ Scheda &amp; Episodi
+          </button>
+          <button type="button" class="tv-btn-secondary" id="tv-hero-fav-btn">
+            🤍 + Preferiti
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ON-SCREEN TV SEARCH SECTION (HIDDEN UNLESS SEARCH TAB ACTIVE) -->
+    <section id="tv-search-section" class="tv-search-section hidden">
+      <div class="tv-search-panel">
+        <div class="tv-search-display">
+          <span class="search-icon">🔍</span>
+          <span id="tv-search-query-text" class="tv-search-query-text">Digita il titolo di un Film, Serie TV o Anime...</span>
+          <input type="search" id="tv-native-search-input" class="tv-native-search-input" placeholder="Digita Film, Serie TV, Anime o Canale..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+        </div>
+        <div id="tv-keyboard" class="tv-keyboard"></div>
+      </div>
+      <div id="tv-search-results-container" class="tv-rows-container"></div>
+    </section>
+
+    <!-- DYNAMIC NETFLIX HORIZONTAL ROWS & CATEGORY GRIDS -->
+    <section id="tv-rows-container" class="tv-rows-container"></section>
+  </main>
+
+  <!-- ========================================================================
+       DETAIL & EPISODES VIEW (NETFLIX / STREMIO TV FULLSCREEN OVERLAY)
+       ======================================================================== -->
+  <section id="tv-detail-view" class="tv-detail-view hidden">
+    <div class="tv-detail-body">
+      <div class="tv-detail-top">
+        <img id="tv-detail-poster" class="tv-detail-poster" src="" alt="">
+        <div class="tv-detail-info">
+          <div class="tv-detail-badges" id="tv-detail-badges"></div>
+          <h1 id="tv-detail-title" class="tv-detail-title">Titolo</h1>
+          <div id="tv-detail-meta" class="tv-detail-meta"></div>
+          <p id="tv-detail-desc" class="tv-detail-desc"></p>
+
+          <div class="tv-detail-buttons" id="tv-detail-buttons">
+            <button type="button" class="tv-btn-primary" id="tv-detail-play-best-btn">
+              ▶ Riproduci Miglior Fonte ITA
+            </button>
+            <button type="button" class="tv-btn-secondary hidden" id="tv-detail-restart-btn">
+              🔄 Ricomincia da 00:00
+            </button>
+            <button type="button" class="tv-btn-secondary" id="tv-detail-fav-btn">
+              🤍 + Preferiti
+            </button>
+            <button type="button" class="tv-btn-secondary hidden" id="tv-detail-remove-hist-btn">
+              🗑️ Rimuovi da Continua
+            </button>
+            <button type="button" class="tv-btn-secondary" id="tv-detail-back-btn">
+              ↩ Indietro
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEASONS & EPISODES FOR SERIES / ANIME (LARGE IMAGE CARDS) -->
+      <div id="tv-episodes-area" class="tv-episodes-area hidden">
+        <h2 class="tv-section-heading">📺 Stagioni ed Episodi</h2>
+        <div id="tv-seasons-bar" class="tv-seasons-bar"></div>
+        <div id="tv-episodes-scroller" class="tv-episodes-scroller"></div>
+      </div>
+
+      <!-- TORBOX STREAMS LIST -->
+      <div id="tv-streams-area" class="tv-streams-area">
+        <h2 class="tv-section-heading" id="tv-streams-heading">⚡ Fonti TorBox Italia Disponibili</h2>
+        <div id="tv-streams-list" class="tv-streams-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       HOLD-OK POPUP MENU FOR "CONTINUA A GUARDARE" & "PREFERITI" CARDS
+       ======================================================================== -->
+  <section id="tv-card-modal" class="tv-modal-overlay hidden">
+    <div class="tv-modal-box">
+      <div class="tv-osd-badge">⚡ AZIONI RAPIDE TITOLO</div>
+      <h2 id="tv-card-modal-title" class="tv-modal-title">Titolo</h2>
+      <p id="tv-card-modal-sub" class="tv-modal-sub">Scegli un'azione con il telecomando:</p>
+      <div class="tv-modal-actions" id="tv-card-modal-actions">
+        <button type="button" class="tv-btn-primary tv-modal-btn" id="tv-modal-resume-btn">▶ Apri e Riprendi visione</button>
+        <button type="button" class="tv-btn-secondary tv-modal-btn" id="tv-modal-fav-btn">❤️ Aggiungi / Rimuovi dai Preferiti</button>
+        <button type="button" class="tv-btn-secondary tv-modal-btn" id="tv-modal-remove-one-btn">🗑️ Rimuovi da Continua a Guardare</button>
+        <button type="button" class="tv-btn-secondary tv-modal-btn" id="tv-modal-clear-all-btn">🧹 Svuota tutta la lista Continua a Guardare</button>
+        <button type="button" class="tv-btn-secondary tv-modal-btn" id="tv-modal-cancel-btn">↩ Annulla</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       TORBOX ACCOUNT & QR CODE WIFI SETUP MODAL
+       ======================================================================== -->
+  <section id="tv-settings-modal" class="tv-modal-overlay hidden">
+    <div class="tv-modal-box tv-settings-box">
+      <div class="tv-settings-cols">
+        <div class="tv-qr-col">
+          <div class="tv-qr-frame">
+            <img id="tv-qr-img" class="tv-qr-img" src="" alt="QR Code Configurazione TV">
+          </div>
+          <div class="tv-qr-url" id="tv-qr-url-label">http://192.168.0.64:4321/tv-setup</div>
+        </div>
+
+        <div class="tv-settings-info-col">
+          <div class="tv-osd-badge">🔒 CONFIGURAZIONE CLOUD CIFRATA (SYNC + TORBOX + IPTV)</div>
+          <h2 class="tv-modal-title">Cloud Sync Personale, IPTV &amp; TorBox via QR</h2>
+          <p class="tv-modal-sub">
+            Inquadra il <strong>QR Code</strong> qui a fianco con la fotocamera del tuo <strong>iPhone / Smartphone</strong> (funziona anche a <strong>Mac spento</strong> e sotto 5G!): si aprirà una pagina cifrata End-to-End dove attivare il tuo <strong>☁️ Cloud Sync Personale (ISYNC1-...)</strong>, le <strong>Liste IPTV</strong> o la <strong>API Key TorBox</strong>!
+          </p>
+          <div class="tv-account-status-box" id="tv-account-status-box">
+            ✅ Smart TV Standalone Attiva • Pronto a ricevere dal telefono
+          </div>
+          <div id="tv-settings-sources-list" class="tv-settings-sources-list"></div>
+          <div class="tv-modal-actions">
+            <button type="button" class="tv-btn-primary tv-modal-btn" id="tv-settings-sync-btn">☁️ Sincronizza Cloud Ora</button>
+            <button type="button" class="tv-btn-secondary tv-modal-btn" id="tv-settings-refresh-btn">🔄 Verifica &amp; Aggiorna Liste</button>
+            <button type="button" class="tv-btn-secondary tv-modal-btn" id="tv-settings-close-btn">↩ Chiudi Impostazioni</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       FULLSCREEN TV VIDEO PLAYER VIEW (WITH NETFLIX HOLD-ARROW SCRUBBING)
+       ======================================================================== -->
+  <section id="tv-player-view" class="tv-player-view hidden">
+    <video id="tv-video" class="tv-video" playsinline webkit-playsinline></video>
+
+    <div id="tv-player-loading" class="tv-player-loading hidden">
+      <div class="tv-spinner"></div>
+      <div id="tv-player-loading-text" class="tv-player-loading-text">Avvio Stream TorBox 4K ITA...</div>
+    </div>
+
+    <!-- SOTTOTITOLI (overlay HTML sincronizzato, funziona su Tizen e Android TV) -->
+    <div id="tv-subtitle-overlay" class="tv-subtitle-overlay hidden"><span id="tv-subtitle-text" class="tv-subtitle-text"></span></div>
+
+    <!-- PANNELLO AUDIO & SOTTOTITOLI -->
+    <div id="tv-tracks-modal" class="tv-tracks-modal hidden">
+      <div class="tv-tracks-box">
+        <div class="tv-tracks-col">
+          <h3 class="tv-tracks-title">🔊 Audio</h3>
+          <div id="tv-tracks-audio-list" class="tv-tracks-list"></div>
+        </div>
+        <div class="tv-tracks-col">
+          <h3 class="tv-tracks-title">💬 Sottotitoli</h3>
+          <div id="tv-tracks-sub-list" class="tv-tracks-list"></div>
+        </div>
+      </div>
+      <div class="tv-tracks-hint">▲▼ Scegli • ◀▶ Cambia colonna • OK Conferma • ↩ Chiudi</div>
+    </div>
+
+    <!-- NETFLIX SCRUB PREVIEW PILL WHEN PRESSING/HOLDING LEFT/RIGHT -->
+    <div id="tv-scrub-preview" class="tv-scrub-preview hidden">
+      <span id="tv-scrub-text">⏩ 00:45:00 (+30s)</span>
+    </div>
+
+    <!-- PULSANTE FLOTTANTE STILE NETFLIX: SALTA RIEPILOGO / SALTA SIGLA (VISIBILE SOLO SE ESISTONO TIMESTAMP REALI) -->
+    <button type="button" id="tv-skip-segment-btn" class="tv-skip-segment-btn hidden">⏭ Salta Sigla</button>
+
+    <div id="tv-player-osd" class="tv-player-osd">
+      <div class="tv-osd-top">
+        <div>
+          <div class="tv-osd-badge">⚡ TORBOX PRO DIRECT ITA</div>
+          <h2 id="tv-osd-title" class="tv-osd-title">Riproduzione in corso</h2>
+          <div id="tv-osd-sub" class="tv-osd-sub"></div>
+        </div>
+        <div class="tv-osd-hint">Tieni premuto ◀ / ▶ per mandare Indietro/Avanti veloce • ▼ per Opzioni • ↩ Salva ed Esci</div>
+      </div>
+
+      <div class="tv-osd-bottom">
+        <div class="tv-progress-row" id="tv-timeline-bar" tabindex="0">
+          <span id="tv-time-cur" class="tv-time-label">00:00</span>
+          <div class="tv-progress-track" id="tv-progress-track">
+            <div id="tv-progress-fill" class="tv-progress-fill"></div>
+            <div id="tv-progress-thumb" class="tv-progress-thumb"></div>
+          </div>
+          <span id="tv-time-tot" class="tv-time-label">00:00</span>
+        </div>
+
+        <div class="tv-osd-controls" id="tv-osd-controls">
+          <button type="button" class="tv-osd-btn" id="tv-btn-playpause">⏸ Pausa</button>
+          <button type="button" class="tv-osd-btn" id="tv-btn-rw">⏪ -15s</button>
+          <button type="button" class="tv-osd-btn" id="tv-btn-ff">⏩ +15s</button>
+          <button type="button" class="tv-osd-btn hidden" id="tv-btn-skip-segment">⏭ Salta Sigla</button>
+          <button type="button" class="tv-osd-btn hidden" id="tv-btn-next-ep">⏭️ Prossimo Ep.</button>
+          <button type="button" class="tv-osd-btn hidden" id="tv-btn-episodes">📺 Episodi</button>
+          <button type="button" class="tv-osd-btn" id="tv-btn-audio">🔊 Audio e Sottotitoli</button>
+          <button type="button" class="tv-osd-btn tv-osd-btn-pip" id="tv-btn-pip">📺 PiP / AirPlay</button>
+          <button type="button" class="tv-osd-btn tv-osd-btn-exit" id="tv-btn-exit">↩ Salva e Chiudi</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANNELLO EPISODI IN-PLAYER (LATERALE SU MAC/TV, BOTTOM SHEET SU IPHONE) -->
+    <div id="tv-player-episodes-drawer" class="tv-player-episodes-drawer hidden">
+      <div class="tv-ep-drawer-handle"></div>
+      <div class="tv-ep-drawer-header">
+        <div>
+          <div class="tv-ep-drawer-title" id="tv-ep-drawer-title">📺 Episodi della Serie</div>
+          <div class="tv-ep-drawer-sub" id="tv-ep-drawer-sub">Seleziona stagione o episodio</div>
+        </div>
+        <button type="button" class="tv-osd-btn" id="tv-ep-drawer-close">✕ Chiudi</button>
+      </div>
+      <div class="tv-ep-drawer-seasons" id="tv-ep-drawer-seasons"></div>
+      <div class="tv-ep-drawer-list" id="tv-ep-drawer-list"></div>
+    </div>
+  </section>
+
+  <script src="hls.min.js"></script>
+  <script src="ota-loader.js"></script>
+</body>
+</html>
