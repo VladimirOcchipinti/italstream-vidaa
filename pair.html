@@ -80,23 +80,20 @@
   </style>
 </head>
 <body>
-  <!-- CARD 1 (MESSA IN CIMA!): CLOUD SYNC PERSONALE -->
-  <div class="card card-sync">
-    <span class="badge">🔒 CONNESSIONE DIRETTA TV • CIFRATURA E2E ILLIMITATA</span>
-    <h2>☁️ 1. Cloud Sync Personale (Continua &amp; Preferiti)</h2>
-    <p>
-      Incolla il tuo codice personale <strong>ISYNC1-...</strong> per sincronizzare su questa Smart TV i film iniziati, gli episodi visti e i Preferiti.<br>
-      <em>(Il telefono lo ricorderà qui in locale così sulla prossima TV ti basterà un solo tap!)</em>
-    </p>
-    <input id="cskey" placeholder="ISYNC1-..." autocapitalize="none" autocomplete="off" spellcheck="false">
-    <button type="button" class="btn-sync" onclick="sendPayload('cloud_sync')">☁️ Attiva &amp; Sincronizza Cloud sulla TV</button>
-    <div id="msg3" class="msg"></div>
+  <!-- CARD 1 (IN CIMA PER TUTTI!): CHIAVE TORBOX -->
+  <div class="card" id="card-torbox">
+    <span class="badge">🔒 CONNESSIONE DIRETTA CIFRATA E2E</span>
+    <h2>🔑 1. Attiva API Key TorBox</h2>
+    <p>Incolla qui la tua <strong>API Key TorBox</strong> per attivare subito Film, Serie TV e Anime 4K in Italiano su questo dispositivo.</p>
+    <input id="tbkey" placeholder="Incolla qui la tua API Key TorBox..." autocapitalize="none" autocomplete="off" spellcheck="false">
+    <button type="button" onclick="sendPayload('torbox')">⚡ Invia &amp; Attiva TorBox</button>
+    <div id="msg2" class="msg"></div>
   </div>
 
-  <!-- CARD 2: LISTE IPTV -->
-  <div class="card">
-    <h2>📡 2. Aggiungi Lista IPTV alla TV</h2>
-    <p>Invia un abbonamento <strong>Xtream Codes</strong> o link <strong>M3U</strong> direttamente alla memoria della Smart TV (funziona anche a Mac spento e in 5G).</p>
+  <!-- CARD 2: LISTE IPTV (OPZIONALE) -->
+  <div class="card" id="card-iptv">
+    <h2>📡 2. Aggiungi Lista IPTV (Opzionale)</h2>
+    <p>Invia un abbonamento <strong>Xtream Codes</strong> o link <strong>M3U</strong> direttamente al dispositivo.</p>
     <label>Tipo di Lista:</label>
     <select id="itype" onchange="document.getElementById('xtbox').style.display=this.value==='xtream'?'block':'none';document.getElementById('m3ubox').style.display=this.value==='m3u'?'block':'none'">
       <option value="xtream">Xtream Codes (Server + Utente + Password)</option>
@@ -116,17 +113,20 @@
       <label>URL Lista .m3u / .m3u8:</label>
       <input id="iurl" placeholder="https://.../lista.m3u" autocapitalize="none">
     </div>
-    <button type="button" class="btn-iptv" onclick="sendPayload('iptv')">🚀 Invia Lista IPTV alla Smart TV</button>
+    <button type="button" class="btn-iptv" onclick="sendPayload('iptv')">🚀 Invia Lista IPTV</button>
     <div id="msg1" class="msg"></div>
   </div>
 
-  <!-- CARD 3: TORBOX KEY -->
-  <div class="card">
-    <h2>⚡ 3. Aggiorna API Key TorBox PRO</h2>
-    <p>Incolla qui la tua API Key TorBox per aggiornare film, serie e anime 4K sulla TV.</p>
-    <input id="tbkey" placeholder="Incolla qui la tua API Key TorBox..." autocapitalize="none">
-    <button type="button" onclick="sendPayload('torbox')">🔑 Invia API Key TorBox alla TV</button>
-    <div id="msg2" class="msg"></div>
+  <!-- CARD 3: CLOUD SYNC PERSONALE (SOLO PER CHI HA UN CODICE ISYNC1-...) -->
+  <div class="card card-sync" id="card-sync">
+    <h2>☁️ 3. Cloud Sync Personale (Opzionale)</h2>
+    <p>
+      Hai un tuo codice personale <strong>ISYNC1-...</strong>? Incollalo qui per copiare in un solo colpo <strong>TorBox + Liste IPTV + Preferiti + Dove sei arrivato</strong>.<br>
+      <em>(Il telefono lo ricorderà in locale per le prossime volte!)</em>
+    </p>
+    <input id="cskey" placeholder="ISYNC1-..." autocapitalize="none" autocomplete="off" spellcheck="false">
+    <button type="button" class="btn-sync" onclick="sendPayload('cloud_sync')">☁️ Attiva &amp; Sincronizza Tutto</button>
+    <div id="msg3" class="msg"></div>
   </div>
 
   <script>
@@ -158,6 +158,10 @@
         var prevKey = localStorage.getItem('italstream_phone_saved_isync');
         if (prevKey && prevKey.indexOf('ISYNC1-') === 0) {
           document.getElementById('cskey').value = prevKey;
+          var syncCard = document.getElementById('card-sync');
+          if (syncCard && syncCard.parentNode) {
+            syncCard.parentNode.insertBefore(syncCard, syncCard.parentNode.firstChild);
+          }
         }
       } catch (e) {}
 
