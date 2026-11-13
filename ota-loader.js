@@ -6,7 +6,7 @@
 (function () {
   'use strict';
 
-  var EMBEDDED_WEB_BUILD = 0;
+  var EMBEDDED_WEB_BUILD = 223;
   var GIST_ID = 'cac1232f3e1c83cf3dd412639a2e3770';
   var GIST_OWNER = 'VladimirOcchipinti';
   var STORAGE_KEY = 'italstream_ota_web_v1';
@@ -169,31 +169,41 @@
   function fetchWithTimeout(url, ms) {
     return new Promise(function (resolve, reject) {
       var done = false;
+      var xhr = new XMLHttpRequest();
       var timer = setTimeout(function () {
         if (!done) {
           done = true;
+          try { xhr.abort(); } catch (e) {}
           reject(new Error('timeout'));
         }
       }, ms);
-      fetch(url, { cache: 'no-store' })
-        .then(function (r) {
-          if (!r.ok) throw new Error('HTTP ' + r.status);
-          return r.text();
-        })
-        .then(function (txt) {
+      try {
+        xhr.open('GET', url, true);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState !== 4 || done) return;
+          done = true;
+          clearTimeout(timer);
+          if (xhr.status >= 200 && xhr.status < 300 && xhr.responseText) {
+            resolve(xhr.responseText);
+          } else {
+            reject(new Error('HTTP ' + xhr.status));
+          }
+        };
+        xhr.onerror = function () {
           if (!done) {
             done = true;
             clearTimeout(timer);
-            resolve(txt);
+            reject(new Error('network'));
           }
-        })
-        .catch(function (err) {
-          if (!done) {
-            done = true;
-            clearTimeout(timer);
-            reject(err);
-          }
-        });
+        };
+        xhr.send();
+      } catch (err) {
+        if (!done) {
+          done = true;
+          clearTimeout(timer);
+          reject(err);
+        }
+      }
     });
   }
 
@@ -284,36 +294,36 @@
   }
 
   function fetchLatestManifestAndUrls(timeoutMs) {
-    var apiUrl = 'https://api.github.com/gists/' + GIST_ID + '?t=' + Math.floor(Date.now() / 30000);
-    return fetchWithTimeout(apiUrl, timeoutMs)
-      .then(function (jsonTxt) {
-        var g = JSON.parse(jsonTxt);
-        var files = (g && g.files) || {};
-        var mFile = files['m.dat'];
-        if (!mFile) throw new Error('No m.dat');
-        var wRawUrl = files['w.dat'] && files['w.dat'].raw_url;
-        var aRawUrl = files['a.dat'] && files['a.dat'].raw_url;
-        var pPromise = (mFile.content && !mFile.truncated)
-          ? Promise.resolve(mFile.content)
-          : fetchWithTimeout(mFile.raw_url, timeoutMs);
-        return pPromise.then(function (mB64) {
-          var manifest = JSON.parse(decryptBase64ToString(mB64));
-          return {
-            manifest: manifest,
-            wUrl: wRawUrl || ('https://gist.githubusercontent.com/' + GIST_OWNER + '/' + GIST_ID + '/raw/w.dat?t=' + Date.now()),
-            aUrl: aRawUrl || ('https://gist.githubusercontent.com/' + GIST_OWNER + '/' + GIST_ID + '/raw/a.dat?t=' + Date.now())
-          };
-        });
+    var rawM = 'https://gist.githubusercontent.com/' + GIST_OWNER + '/' + GIST_ID + '/raw/m.dat?t=' + Math.floor(Date.now() / 30000);
+    return fetchWithTimeout(rawM, timeoutMs)
+      .then(function (mB64) {
+        var manifest = JSON.parse(decryptBase64ToString(mB64));
+        return {
+          manifest: manifest,
+          wUrl: 'https://gist.githubusercontent.com/' + GIST_OWNER + '/' + GIST_ID + '/raw/w.dat?t=' + Date.now(),
+          aUrl: 'https://gist.githubusercontent.com/' + GIST_OWNER + '/' + GIST_ID + '/raw/a.dat?t=' + Date.now()
+        };
       })
       .catch(function () {
-        var rawM = 'https://gist.githubusercontent.com/' + GIST_OWNER + '/' + GIST_ID + '/raw/m.dat?t=' + Math.floor(Date.now() / 60000);
-        return fetchWithTimeout(rawM, timeoutMs).then(function (mB64) {
-          var manifest = JSON.parse(decryptBase64ToString(mB64));
-          return {
-            manifest: manifest,
-            wUrl: 'https://gist.githubusercontent.com/' + GIST_OWNER + '/' + GIST_ID + '/raw/w.dat?t=' + Date.now(),
-            aUrl: 'https://gist.githubusercontent.com/' + GIST_OWNER + '/' + GIST_ID + '/raw/a.dat?t=' + Date.now()
-          };
+        var apiUrl = 'https://api.github.com/gists/' + GIST_ID + '?t=' + Math.floor(Date.now() / 30000);
+        return fetchWithTimeout(apiUrl, timeoutMs + 2500).then(function (jsonTxt) {
+          var g = JSON.parse(jsonTxt);
+          var files = (g && g.files) || {};
+          var mFile = files['m.dat'];
+          if (!mFile) throw new Error('No m.dat');
+          var wRawUrl = files['w.dat'] && files['w.dat'].raw_url;
+          var aRawUrl = files['a.dat'] && files['a.dat'].raw_url;
+          var pPromise = (mFile.content && !mFile.truncated)
+            ? Promise.resolve(mFile.content)
+            : fetchWithTimeout(mFile.raw_url, timeoutMs + 1500);
+          return pPromise.then(function (mB64) {
+            var manifest = JSON.parse(decryptBase64ToString(mB64));
+            return {
+              manifest: manifest,
+              wUrl: wRawUrl || ('https://gist.githubusercontent.com/' + GIST_OWNER + '/' + GIST_ID + '/raw/w.dat?t=' + Date.now()),
+              aUrl: aRawUrl || ('https://gist.githubusercontent.com/' + GIST_OWNER + '/' + GIST_ID + '/raw/a.dat?t=' + Date.now())
+            };
+          });
         });
       });
   }
@@ -338,7 +348,7 @@
       }
     } catch (e) {}
 
-    fetchLatestManifestAndUrls(1400)
+    fetchLatestManifestAndUrls(3500)
       .then(function (res) {
         var manifest = res.manifest || {};
         applyRemoteConfigIfPresent(manifest);
@@ -352,7 +362,7 @@
 
         var remoteWebBuild = Number(manifest.webBuild || manifest.build || 0);
         if (remoteWebBuild > activeBuild) {
-          return fetchWithTimeout(res.wUrl, 6000).then(function (wB64) {
+          return fetchWithTimeout(res.wUrl, 12000).then(function (wB64) {
             var bundleObj = JSON.parse(decryptBase64ToString(wB64));
             try {
               localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -389,121 +399,5 @@
     EMBEDDED_WEB_BUILD: EMBEDDED_WEB_BUILD
   };
 
-  
-  function ensureCatalogAndStart() {
-    fetchWithTimeout("c.dat", 8000)
-      .then(function (cB64) {
-        var catScript = document.createElement("script");
-        catScript.text = decryptBase64ToString(cB64);
-        document.body.appendChild(catScript);
-      })
-      .catch(function () {})
-      .then(function () {
-        startBootSequence();
-      });
-  }
-
-  function showVidaaPinGate() {
-    try {
-      if (localStorage.getItem("italstream_vidaa_pin_ok_v1") === "1") {
-        ensureCatalogAndStart();
-        return;
-      }
-    } catch (e) {}
-
-    var intro = document.getElementById("tv-netflix-intro");
-    if (intro) intro.style.display = "none";
-
-    var isCompact = (window.innerWidth || 1280) < 1680;
-    var overlay = document.createElement("div");
-    overlay.id = "vidaa-pin-gate";
-    overlay.style.cssText = "position:fixed;top:0;left:0;right:0;bottom:0;z-index:999999;background:#05060a;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;";
-    overlay.innerHTML =
-      "<div style=\"background:#111625;border:2px solid #26324f;border-radius:20px;padding:" + (isCompact ? "24px 28px" : "38px 48px") + ";text-align:center;max-width:" + (isCompact ? "480px" : "640px") + ";width:92vw;box-shadow:0 24px 70px rgba(0,0,0,0.85)\">" +
-      "<div style=\"font-size:" + (isCompact ? "14px" : "19px") + ";font-weight:800;color:#e50914;letter-spacing:1.5px;margin-bottom:6px\">🔒 ACCESSO PRIVATO SMART TV</div>" +
-      "<div style=\"font-size:" + (isCompact ? "24px" : "32px") + ";font-weight:900;margin-bottom:6px\">Inserisci PIN Dispositivo</div>" +
-      "<div style=\"font-size:" + (isCompact ? "13px" : "17px") + ";color:#9ca3af;margin-bottom:18px\">Usa frecce + OK del telecomando, i tasti numerici o il puntatore</div>" +
-      "<div id=\"vpin-dots\" style=\"font-size:" + (isCompact ? "30px" : "42px") + ";letter-spacing:14px;font-weight:900;background:#07090f;border:2px solid #2e3b5b;border-radius:14px;padding:" + (isCompact ? "10px 16px" : "14px 22px") + ";margin-bottom:18px\">• • • •</div>" +
-      "<div id=\"vpin-grid\" style=\"display:flex;flex-wrap:wrap;justify-content:center;gap:" + (isCompact ? "8px" : "12px") + ";max-width:" + (isCompact ? "360px" : "460px") + ";margin:0 auto\"></div>" +
-      "<div id=\"vpin-err\" style=\"margin-top:12px;font-size:15px;color:#f87171;min-height:22px;font-weight:700\"></div>" +
-      "</div>";
-    document.body.appendChild(overlay);
-
-    var keys = ["1","2","3","4","5","6","7","8","9","0","⌫"];
-    var grid = document.getElementById("vpin-grid");
-    var dots = document.getElementById("vpin-dots");
-    var errEl = document.getElementById("vpin-err");
-    var entered = "";
-    var focusIdx = 1;
-    var btns = [];
-
-    function renderDots() {
-      var out = [];
-      for (var i = 0; i < 4; i++) out.push(i < entered.length ? "●" : "•");
-      dots.textContent = out.join(" ");
-    }
-    function applyFocus() {
-      for (var i = 0; i < btns.length; i++) {
-        btns[i].style.border = i === focusIdx ? "3px solid #ffffff" : "2px solid #2b3654";
-        btns[i].style.background = i === focusIdx ? "#e50914" : "#1a2236";
-        btns[i].style.transform = i === focusIdx ? "scale(1.06)" : "scale(1)";
-      }
-    }
-    function checkPin() {
-      var h = 0;
-      for (var i = 0; i < entered.length; i++) h = (h * 33 + entered.charCodeAt(i)) >>> 0;
-      if (entered.length === 4 && h === 1856463) {
-        try { localStorage.setItem("italstream_vidaa_pin_ok_v1", "1"); } catch (e) {}
-        document.removeEventListener("keydown", onKey, true);
-        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-        if (intro) intro.style.display = "";
-        ensureCatalogAndStart();
-      } else if (entered.length >= 4) {
-        entered = "";
-        renderDots();
-        errEl.textContent = "PIN errato, riprova";
-      }
-    }
-    function pressKey(val) {
-      errEl.textContent = "";
-      if (val === "⌫") {
-        entered = entered.slice(0, -1);
-        renderDots();
-        return;
-      }
-      if (entered.length < 4) {
-        entered += val;
-        renderDots();
-        if (entered.length === 4) setTimeout(checkPin, 100);
-      }
-    }
-    for (var k = 0; k < keys.length; k++) {
-      (function (label, idx) {
-        var b = document.createElement("button");
-        b.type = "button";
-        b.textContent = label;
-        b.style.cssText = "width:" + (isCompact ? "58px" : "74px") + ";height:" + (isCompact ? "50px" : "64px") + ";border-radius:12px;color:#fff;font-size:" + (isCompact ? "20px" : "25px") + ";font-weight:800;cursor:pointer;";
-        b.onclick = function () { focusIdx = idx; applyFocus(); pressKey(label); };
-        grid.appendChild(b);
-        btns.push(b);
-      })(keys[k], k);
-    }
-    applyFocus();
-
-    function onKey(ev) {
-      var code = ev.keyCode || ev.which || 0;
-      var key = ev.key || "";
-      if (/^[0-9]$/.test(key)) { ev.preventDefault(); ev.stopPropagation(); pressKey(key); return; }
-      if (code >= 48 && code <= 57) { ev.preventDefault(); ev.stopPropagation(); pressKey(String(code - 48)); return; }
-      if (code === 8 || key === "Backspace") { ev.preventDefault(); ev.stopPropagation(); pressKey("⌫"); return; }
-      if (code === 37 || key === "ArrowLeft") { ev.preventDefault(); ev.stopPropagation(); focusIdx = (focusIdx + btns.length - 1) % btns.length; applyFocus(); return; }
-      if (code === 39 || key === "ArrowRight") { ev.preventDefault(); ev.stopPropagation(); focusIdx = (focusIdx + 1) % btns.length; applyFocus(); return; }
-      if (code === 38 || key === "ArrowUp") { ev.preventDefault(); ev.stopPropagation(); focusIdx = (focusIdx - 5 + btns.length) % btns.length; applyFocus(); return; }
-      if (code === 40 || key === "ArrowDown") { ev.preventDefault(); ev.stopPropagation(); focusIdx = (focusIdx + 5) % btns.length; applyFocus(); return; }
-      if (code === 13 || key === "Enter") { ev.preventDefault(); ev.stopPropagation(); pressKey(keys[focusIdx]); return; }
-    }
-    document.addEventListener("keydown", onKey, true);
-  }
-  showVidaaPinGate();
-
+  startBootSequence();
 })();
