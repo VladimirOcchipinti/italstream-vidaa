@@ -137,8 +137,15 @@
       ];
 
       function parseHash() {
-        var h = String(window.location.hash || '').replace(/^#/, '');
+        var h = String(window.location.hash || '').slice(1);
         var out = {};
+        try {
+          if (typeof URLSearchParams !== 'undefined') {
+            var sp = new URLSearchParams(h);
+            sp.forEach(function (val, key) { out[key] = val; });
+            return out;
+          }
+        } catch (eSp) {}
         var parts = h.split('&');
         for (var i = 0; i < parts.length; i++) {
           var eq = parts[i].indexOf('=');
@@ -148,6 +155,45 @@
         }
         return out;
       }
+
+      function extractXtreamFromFullUrl(raw) {
+        var s = String(raw || '').trim();
+        if (!s) return null;
+        if (!/^https?:\/\//i.test(s) && /^[a-z0-9.-]+(?::\d+)?\/(?:get\.php|player_api\.php|live\/|movie\/|series\/)/i.test(s)) {
+          s = 'http://' + s;
+        }
+        if (!/^https?:\/\//i.test(s)) return null;
+        try {
+          var u = new URL(s);
+          var qU = (u.searchParams.get('username') || u.searchParams.get('user') || '').trim();
+          var qP = (u.searchParams.get('password') || u.searchParams.get('pass') || '').trim();
+          var qO = (u.searchParams.get('output') || '').trim().toLowerCase();
+          if (qU && qP) {
+            return { server: u.protocol + '//' + u.host, username: qU, password: qP, output: qO === 'ts' ? 'ts' : 'm3u8' };
+          }
+        } catch (e) {}
+        return null;
+      }
+
+      function handleAutoDetectPaste(ev) {
+        var val = ev && ev.target ? ev.target.value.trim() : '';
+        var det = extractXtreamFromFullUrl(val);
+        if (!det) return;
+        var sel = document.getElementById('itype');
+        sel.value = 'xtream';
+        document.getElementById('xtbox').style.display = 'block';
+        document.getElementById('m3ubox').style.display = 'none';
+        document.getElementById('isrv').value = det.server;
+        document.getElementById('iuser').value = det.username;
+        document.getElementById('ipass').value = det.password;
+        var m = document.getElementById('msg1');
+        m.style.display = 'block';
+        m.style.background = '#064e3b';
+        m.style.color = '#6ee7b7';
+        m.textContent = '✨ Link Xtream riconosciuto! Ora premi "🚀 Invia Lista IPTV".';
+      }
+      document.getElementById('isrv').addEventListener('input', handleAutoDetectPaste);
+      document.getElementById('iurl').addEventListener('input', handleAutoDetectPaste);
 
       var params = parseHash();
       var ROOM = params.r || '';
@@ -240,7 +286,7 @@
                   try { ws.close(); } catch (e) {}
                   resolve(true);
                 }
-              }, 220);
+              }, 550);
             }
           };
           ws.onerror = function () {
@@ -294,6 +340,33 @@
           p.username = document.getElementById('iuser').value.trim();
           p.password = document.getElementById('ipass').value.trim();
           p.url = document.getElementById('iurl').value.trim();
+
+          var autoXt = extractXtreamFromFullUrl(p.url) || extractXtreamFromFullUrl(p.server);
+          if (autoXt) {
+            p.type = 'xtream';
+            p.server = autoXt.server;
+            p.username = p.username || autoXt.username;
+            p.password = p.password || autoXt.password;
+            p.output = autoXt.output;
+            p.url = '';
+          } else if (p.type === 'xtream' && !p.username && (p.url || /\.m3u8?(?:[?#]|$)/i.test(p.server) || /^https?:\/\/.+\/.+/i.test(p.server))) {
+            p.type = 'm3u';
+            p.url = p.url || p.server;
+          }
+
+          if (p.type === 'xtream') {
+            if (!p.server || !p.username || !p.password) {
+              m.style.background = '#7f1d1d';
+              m.style.color = '#fecaca';
+              m.textContent = '⚠️ Inserisci Server URL, Username e Password (oppure scegli "Link M3U" se hai un solo link).';
+              return;
+            }
+          } else if (!p.url) {
+            m.style.background = '#7f1d1d';
+            m.style.color = '#fecaca';
+            m.textContent = '⚠️ Incolla il link della lista .m3u / .m3u8 prima di inviare.';
+            return;
+          }
         }
 
         m.textContent = '⏳ Cifratura E2E e invio istantaneo alla Smart TV...';
