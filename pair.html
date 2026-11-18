@@ -44,7 +44,7 @@
     h2 { margin: 0 0 6px 0; font-size: 18.5px; }
     p { margin: 0 0 12px 0; font-size: 13px; color: #9ca3af; line-height: 1.45; }
     label { display: block; font-size: 12.5px; font-weight: 700; margin: 8px 0 5px 0; color: #d1d5db; }
-    input, select {
+    input, select, textarea {
       width: 100%;
       padding: 12px;
       border-radius: 10px;
@@ -52,6 +52,22 @@
       background: #07090e;
       color: #ffffff;
       font-size: 15px;
+    }
+    textarea {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12.5px;
+      line-height: 1.35;
+      resize: vertical;
+    }
+    .guide-box {
+      background: #0b101d;
+      border: 1px solid #1f2d4a;
+      border-radius: 11px;
+      padding: 11px 12px;
+      margin-bottom: 10px;
+      font-size: 12.2px;
+      color: #cbd5e1;
+      line-height: 1.45;
     }
     button {
       width: 100%;
@@ -117,9 +133,24 @@
     <div id="msg1" class="msg"></div>
   </div>
 
-  <!-- CARD 3: CLOUD SYNC PERSONALE (SOLO PER CHI HA UN CODICE ISYNC1-...) -->
+  <!-- CARD 2B: TUNNEL VPN WIREGUARD SPLIT-TUNNEL (FIRESTICK / ANDROID TV) -->
+  <div class="card" id="card-vpn" style="border-color:#10b981;">
+    <h2>🛡️ 3. Tunnel VPN Anti-Blocco (Firestick / Android TV)</h2>
+    <p>Se il tuo operatore blocca la tua lista IPTV, invia qui il tuo profilo <strong>WireGuard</strong>: passerà in VPN <strong>solo ItalStream+</strong> (Netflix, Prime Video e le altre app della TV restano normali!).</p>
+    <div class="guide-box">
+      <strong>📖 Guida rapida — Come crearlo gratis in 1 minuto:</strong><br>
+      1️⃣ <strong>Gratis con ProtonVPN Free:</strong> vai su <em>account.protonvpn.com</em> ➔ menu <strong>Downloads</strong> ➔ scorri a <strong>WireGuard configuration</strong> ➔ scegli <strong>GNU/Linux</strong>, seleziona un server <strong>FREE estero</strong> (es. Paesi Bassi NL o Svizzera) ➔ premi <strong>Create</strong> e copia il testo <code>[Interface] ... [Peer]</code>.<br>
+      2️⃣ <strong>Con NordVPN:</strong> vai su <em>my.nordaccount.com</em> ➔ <strong>NordVPN</strong> ➔ <strong>Configura manualmente</strong> ➔ WireGuard ➔ scegli <strong>Switzerland (Svizzera)</strong> e copia il testo.
+    </div>
+    <textarea id="wgconf" rows="5" placeholder="[Interface]&#10;PrivateKey = ...&#10;Address = ...&#10;DNS = 1.1.1.1&#10;&#10;[Peer]&#10;PublicKey = ...&#10;AllowedIPs = 0.0.0.0/0&#10;Endpoint = ...:51820" autocapitalize="none" autocomplete="off" spellcheck="false"></textarea>
+    <button type="button" style="background:linear-gradient(135deg,#059669,#10b981);" onclick="sendPayload('vpn_wg')">🛡️ Invia &amp; Attiva VPN sulla TV</button>
+    <button type="button" style="background:#334155;margin-top:8px;padding:10px;font-size:13.5px;" onclick="sendPayload('vpn_wg_off')">⚪ Disattiva VPN sulla TV</button>
+    <div id="msg4" class="msg"></div>
+  </div>
+
+  <!-- CARD 4: CLOUD SYNC PERSONALE (SOLO PER CHI HA UN CODICE ISYNC1-...) -->
   <div class="card card-sync" id="card-sync">
-    <h2>☁️ 3. Cloud Sync Personale (Opzionale)</h2>
+    <h2>☁️ 4. Cloud Sync Personale (Opzionale)</h2>
     <p>
       Hai un tuo codice personale <strong>ISYNC1-...</strong>? Incollalo qui per copiare in un solo colpo <strong>TorBox + Liste IPTV + Preferiti + Dove sei arrivato</strong>.<br>
       <em>(Il telefono lo ricorderà in locale per le prossime volte!)</em>
@@ -300,7 +331,7 @@
       }
 
       window.sendPayload = async function (kind) {
-        var msgId = kind === 'iptv' ? 'msg1' : (kind === 'torbox' ? 'msg2' : 'msg3');
+        var msgId = kind === 'iptv' ? 'msg1' : (kind === 'torbox' ? 'msg2' : (kind === 'cloud_sync' ? 'msg3' : 'msg4'));
         var m = document.getElementById(msgId);
         m.style.display = 'block';
         m.style.background = '#1e293b';
@@ -333,6 +364,16 @@
           if (p.cloudSyncKey.indexOf('ISYNC1-') === 0) {
             try { localStorage.setItem('italstream_phone_saved_isync', p.cloudSyncKey); } catch (e) {}
           }
+        } else if (kind === 'vpn_wg') {
+          p.wgConfig = document.getElementById('wgconf').value.trim();
+          if (!/\[interface\]/i.test(p.wgConfig) || !/\[peer\]/i.test(p.wgConfig)) {
+            m.style.background = '#7f1d1d';
+            m.style.color = '#fecaca';
+            m.textContent = '⚠️ Incolla il testo completo del profilo WireGuard ([Interface] e [Peer]).';
+            return;
+          }
+        } else if (kind === 'vpn_wg_off') {
+          p.wgConfig = '';
         } else {
           p.type = document.getElementById('itype').value;
           p.name = document.getElementById('iname').value.trim() || 'Lista TV';
