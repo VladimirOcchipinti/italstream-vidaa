@@ -133,18 +133,25 @@
     <div id="msg1" class="msg"></div>
   </div>
 
-  <!-- CARD 2B: TUNNEL VPN WIREGUARD SPLIT-TUNNEL (FIRESTICK / ANDROID TV) -->
+  <!-- CARD 2B: TUNNEL VPN WIREGUARD SPLIT-TUNNEL (FIRESTICK / ANDROID TV) + RELAY SMART TV -->
   <div class="card" id="card-vpn" style="border-color:#10b981;">
-    <h2>🛡️ 3. Tunnel VPN Anti-Blocco (Firestick / Android TV)</h2>
-    <p>Se il tuo operatore blocca la tua lista IPTV, invia qui il tuo profilo <strong>WireGuard</strong>: passerà in VPN <strong>solo ItalStream+</strong> (Netflix, Prime Video e le altre app della TV restano normali!).</p>
+    <h2>🛡️ 3. Tunnel VPN Anti-Blocco (Firestick / Smart TV)</h2>
+    <p>Se il tuo operatore blocca la tua lista IPTV, carica o incolla il tuo profilo <strong>WireGuard</strong>: passerà in VPN <strong>solo ItalStream+</strong> (Netflix, Prime Video e le altre app della TV restano normali!).</p>
     <div class="guide-box">
       <strong>📖 Guida rapida — Come crearlo gratis in 1 minuto:</strong><br>
-      1️⃣ <strong>Gratis con ProtonVPN Free:</strong> vai su <em>account.protonvpn.com</em> ➔ menu <strong>Downloads</strong> ➔ scorri a <strong>WireGuard configuration</strong> ➔ scegli <strong>GNU/Linux</strong>, seleziona un server <strong>FREE estero</strong> (es. Paesi Bassi NL o Svizzera) ➔ premi <strong>Create</strong> e copia il testo <code>[Interface] ... [Peer]</code>.<br>
-      2️⃣ <strong>Con NordVPN:</strong> vai su <em>my.nordaccount.com</em> ➔ <strong>NordVPN</strong> ➔ <strong>Configura manualmente</strong> ➔ WireGuard ➔ scegli <strong>Switzerland (Svizzera)</strong> e copia il testo.
+      1️⃣ <strong>Gratis con ProtonVPN Free:</strong> vai su <em>account.protonvpn.com</em> ➔ menu <strong>Downloads</strong> ➔ scorri a <strong>WireGuard configuration</strong> ➔ scegli <strong>GNU/Linux</strong>, seleziona un server <strong>FREE estero</strong> (es. Paesi Bassi NL o Svizzera) ➔ premi <strong>Create</strong> e scarica il file <code>.conf</code> (o copia il testo).<br>
+      2️⃣ <strong>Con NordVPN:</strong> vai su <em>my.nordaccount.com</em> ➔ <strong>NordVPN</strong> ➔ <strong>Configura manualmente</strong> ➔ WireGuard ➔ scegli <strong>Switzerland (Svizzera)</strong>.
     </div>
+    <input type="file" id="wgfile" accept=".conf,.txt,text/plain,*/*" style="display:none;">
+    <button type="button" style="background:#1e293b;border:1px dashed #10b981;margin-bottom:10px;padding:11px;font-size:14px;" onclick="document.getElementById('wgfile').click()">📂 Carica file .conf scaricato sul telefono</button>
     <textarea id="wgconf" rows="5" placeholder="[Interface]&#10;PrivateKey = ...&#10;Address = ...&#10;DNS = 1.1.1.1&#10;&#10;[Peer]&#10;PublicKey = ...&#10;AllowedIPs = 0.0.0.0/0&#10;Endpoint = ...:51820" autocapitalize="none" autocomplete="off" spellcheck="false"></textarea>
-    <button type="button" style="background:linear-gradient(135deg,#059669,#10b981);" onclick="sendPayload('vpn_wg')">🛡️ Invia &amp; Attiva VPN sulla TV</button>
-    <button type="button" style="background:#334155;margin-top:8px;padding:10px;font-size:13.5px;" onclick="sendPayload('vpn_wg_off')">⚪ Disattiva VPN sulla TV</button>
+    <button type="button" style="background:linear-gradient(135deg,#059669,#10b981);" onclick="sendPayload('vpn_wg')">🛡️ Invia &amp; Attiva VPN sulla Firestick / Android TV</button>
+    <div style="margin-top:12px;padding-top:10px;border-top:1px solid #1e293b;">
+      <label style="margin-top:0;">🌐 Oppure Relay HTTPS (per TV Samsung / LG / Hisense):</label>
+      <input id="relayurl" placeholder="https://tuo-worker.workers.dev" autocapitalize="none" autocomplete="off" spellcheck="false">
+      <button type="button" style="background:#0284c7;margin-top:8px;padding:12px;font-size:14px;" onclick="sendPayload('relay_url')">🌐 Attiva Relay HTTPS sulla TV</button>
+    </div>
+    <button type="button" style="background:#334155;margin-top:8px;padding:10px;font-size:13.5px;" onclick="sendPayload('vpn_wg_off')">⚪ Disattiva VPN / Relay sulla TV</button>
     <div id="msg4" class="msg"></div>
   </div>
 
@@ -225,6 +232,23 @@
       }
       document.getElementById('isrv').addEventListener('input', handleAutoDetectPaste);
       document.getElementById('iurl').addEventListener('input', handleAutoDetectPaste);
+      var wgFileInput = document.getElementById('wgfile');
+      if (wgFileInput) {
+        wgFileInput.addEventListener('change', function (ev) {
+          var f = ev.target && ev.target.files && ev.target.files[0];
+          if (!f) return;
+          var reader = new FileReader();
+          reader.onload = function () {
+            document.getElementById('wgconf').value = String(reader.result || '').trim();
+            var m4 = document.getElementById('msg4');
+            m4.style.display = 'block';
+            m4.style.background = '#064e3b';
+            m4.style.color = '#6ee7b7';
+            m4.textContent = '📂 File ' + f.name + ' letto! Premi "🛡️ Invia & Attiva VPN".';
+          };
+          reader.readAsText(f);
+        });
+      }
 
       var params = parseHash();
       var ROOM = params.r || '';
@@ -374,6 +398,14 @@
           }
         } else if (kind === 'vpn_wg_off') {
           p.wgConfig = '';
+        } else if (kind === 'relay_url') {
+          p.relayUrl = document.getElementById('relayurl').value.trim();
+          if (!p.relayUrl) {
+            m.style.background = '#7f1d1d';
+            m.style.color = '#fecaca';
+            m.textContent = '⚠️ Incolla l\'URL del tuo Relay HTTPS (es. https://...workers.dev).';
+            return;
+          }
         } else {
           p.type = document.getElementById('itype').value;
           p.name = document.getElementById('iname').value.trim() || 'Lista TV';
