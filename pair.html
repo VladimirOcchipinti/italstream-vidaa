@@ -254,8 +254,12 @@
       var ROOM = params.r || '';
       var SEC = params.k || '';
 
-      // Pre-fill saved ISYNC1 key on phone browser for 1-tap pairing across multiple TVs
+      // Pre-fill saved TorBox key & ISYNC1 key on phone browser for 1-tap pairing across multiple TVs
       try {
+        var prevTb = localStorage.getItem('italstream_phone_saved_tbkey');
+        if (prevTb && prevTb.length > 10) {
+          document.getElementById('tbkey').value = prevTb;
+        }
         var prevKey = localStorage.getItem('italstream_phone_saved_isync');
         if (prevKey && prevKey.indexOf('ISYNC1-') === 0) {
           document.getElementById('cskey').value = prevKey;
@@ -374,11 +378,16 @@
         };
 
         if (kind === 'torbox') {
-          p.torboxKey = document.getElementById('tbkey').value.trim();
+          var rawTb = document.getElementById('tbkey').value || '';
+          p.torboxKey = rawTb.replace(/^bearer\s+/i, '').replace(/["'\s]+/g, '');
+          document.getElementById('tbkey').value = p.torboxKey;
           if (p.torboxKey.length < 10) {
+            m.style.background = '#7f1d1d';
+            m.style.color = '#fecaca';
             m.textContent = '⚠️ Inserisci una API Key TorBox valida.';
             return;
           }
+          try { localStorage.setItem('italstream_phone_saved_tbkey', p.torboxKey); } catch (eTb) {}
         } else if (kind === 'cloud_sync') {
           p.cloudSyncKey = document.getElementById('cskey').value.trim();
           if (p.cloudSyncKey.indexOf('ISYNC1-') !== 0 && p.cloudSyncKey !== 'CLEAR') {
@@ -445,8 +454,21 @@
         m.textContent = '⏳ Cifratura E2E e invio istantaneo alla Smart TV...';
         var cipher = xorEncryptBase64(p);
         var topic = 'italstream/v2/pair/' + ROOM;
+        var ntfyUrl = 'https://ntfy.sh/istv_p_' + encodeURIComponent(ROOM);
+
+        function publishToNtfy443() {
+          return fetch(ntfyUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+            body: cipher
+          }).then(function (r) {
+            if (!r || !r.ok) throw new Error('ntfy ' + (r ? r.status : 0));
+            return true;
+          });
+        }
 
         var results = await Promise.allSettled([
+          publishToNtfy443(),
           publishToBroker(BROKERS[0], topic, cipher),
           publishToBroker(BROKERS[1], topic, cipher)
         ]);
