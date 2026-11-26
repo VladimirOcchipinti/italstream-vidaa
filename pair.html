@@ -96,6 +96,19 @@
   </style>
 </head>
 <body>
+  <!-- CARD 0: ACCOUNT ITALSTREAM+ (LOGIN RAPIDO DA TELEFONO -> SMART TV VIA MINI PC) -->
+  <div class="card card-sync" id="card-account">
+    <span class="badge" style="background:#0c4a6e;border-color:#38bdf8;color:#bae6fd;">👤 ACCESSO RAPIDO ACCOUNT MINI PC</span>
+    <h2>👤 Accedi col tuo Account ItalStream+</h2>
+    <p>Se hai un accesso creato dall'Admin, fai login qui dal telefono: la Smart TV riceverà il token cifrato e sincronizzerà <strong>Cronologia, Preferiti, IPTV, Numeri Telecomando</strong> e l'eventuale <strong>Pool TorBox</strong> in 1 secondo!</p>
+    <label>Email o Username:</label>
+    <input id="accemail" placeholder="es. marco@italstream.it" autocapitalize="none" autocomplete="username" spellcheck="false">
+    <label>Password:</label>
+    <input id="accpass" type="password" placeholder="La tua password..." autocomplete="current-password">
+    <button type="button" class="btn-sync" onclick="sendAccountLoginToTv()">🚀 Accedi &amp; Collega la TV</button>
+    <div id="msgAcc" class="msg"></div>
+  </div>
+
   <!-- CARD 1 (IN CIMA PER TUTTI!): CHIAVE TORBOX -->
   <div class="card" id="card-torbox">
     <span class="badge">🔒 CONNESSIONE DIRETTA CIFRATA E2E</span>
@@ -357,6 +370,73 @@
           };
         });
       }
+
+      window.sendAccountLoginToTv = async function () {
+        var m = document.getElementById('msgAcc');
+        m.style.display = 'block';
+        m.style.background = '#1e293b';
+        m.style.color = '#e2e8f0';
+        var email = (document.getElementById('accemail').value || '').trim().toLowerCase();
+        var password = (document.getElementById('accpass').value || '').trim();
+        if (!email || !password) {
+          m.style.background = '#7f1d1d';
+          m.style.color = '#fecaca';
+          m.textContent = '⚠️ Inserisci Email/Username e Password.';
+          return;
+        }
+        m.textContent = '🔐 Verifica accesso sul server Mini PC...';
+        try {
+          var devId = 'tv_' + Math.random().toString(16).slice(2, 12);
+          var res = await fetch('https://vladimir-gemini-t34.tail8ade2c.ts.net:8443/italstream-sync/api/v1/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: email,
+              password: password,
+              deviceId: devId,
+              deviceName: 'Smart TV (via QR)',
+              platform: 'smart_tv'
+            })
+          });
+          var data = await res.json();
+          if (!res.ok || !data || !data.ok || !data.token) {
+            m.style.background = '#7f1d1d';
+            m.style.color = '#fecaca';
+            m.textContent = '❌ ' + ((data && data.error) || ('Accesso negato (HTTP ' + res.status + ')'));
+            return;
+          }
+          m.textContent = '⏳ Invio sessione cifrata E2E alla Smart TV...';
+          var p = {
+            id: String(Date.now()) + '_' + Math.random().toString(16).slice(2, 8),
+            ts: Date.now(),
+            kind: 'account_session',
+            token: data.token,
+            deviceId: data.deviceId || devId,
+            user: data.user || { email: email, torboxMode: 'own' }
+          };
+          var cipher = xorEncryptBase64(p);
+          var topic = 'italstream/v2/pair/' + ROOM;
+          var ntfyUrl = 'https://ntfy.sh/istv_p_' + encodeURIComponent(ROOM);
+          var results = await Promise.allSettled([
+            fetch(ntfyUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=UTF-8' }, body: cipher }),
+            publishToBroker(BROKERS[0], topic, cipher),
+            publishToBroker(BROKERS[1], topic, cipher)
+          ]);
+          if (results.some(function (r) { return r.status === 'fulfilled'; })) {
+            m.style.background = '#064e3b';
+            m.style.color = '#6ee7b7';
+            m.textContent = '✅ TV collegata all\'account ' + email + '! Guarda lo schermo della TV.';
+          } else {
+            m.style.background = '#7f1d1d';
+            m.style.color = '#fecaca';
+            m.textContent = '⚠️ Errore di rete nell\'invio alla TV. Riprova tra un secondo.';
+          }
+        } catch (err) {
+          m.style.background = '#7f1d1d';
+          m.style.color = '#fecaca';
+          m.textContent = '⚠️ Server Mini PC non raggiungibile: ' + (err && err.message ? err.message : err);
+        }
+      };
 
       window.sendPayload = async function (kind) {
         var msgId = kind === 'iptv' ? 'msg1' : (kind === 'torbox' ? 'msg2' : (kind === 'cloud_sync' ? 'msg3' : 'msg4'));
